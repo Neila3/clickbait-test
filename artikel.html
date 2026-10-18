@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nachrichtenartikel</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 750px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #222;
+      background: #f6f7f9;
+    }
+    article {
+      background: #fff;
+      border: 1px solid #e0e3e8;
+      padding: 24px;
+      border-radius: 12px;
+    }
+    .small { color: #626873; font-size: 14px; }
+    a { color: #245da8; }
+  </style>
+</head>
+<body>
+  <article>
+    <p class="small" id="thema"></p>
+    <h1 id="headline">Artikel wird geladen ...</h1>
+    <p class="small">Simulierte Artikelseite</p>
+    <hr>
+    <p>Dies ist eine simulierte Artikelseite im Rahmen einer Untersuchung zur Wirkung von Online-Schlagzeilen.</p>
+    <p>Der Artikelinhalt ist für die Untersuchung nicht entscheidend. Die Seite dient dazu, das Öffnen eines Artikels zu erfassen.</p>
+    <p><a href="index2.html">Zurück zum Nachrichtentest</a></p>
+  </article>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("thema").textContent = params.get("thema") || "Nachrichten";
+    document.getElementById("headline").textContent = params.get("headline") || "Nachrichtenartikel";
+  </script>
+</body>
+</html>

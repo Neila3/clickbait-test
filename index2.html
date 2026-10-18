@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nachrichten-Test</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 50px;
+      line-height: 1.55;
+      color: #222;
+      background: #f6f7f9;
+    }
+    h1 { line-height: 1.2; }
+    .intro, .card, .rating-card {
+      background: #fff;
+      border: 1px solid #e0e3e8;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .progress, .small { color: #626873; font-size: 14px; }
+    .headline-button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 14px 15px;
+      text-align: left;
+      line-height: 1.45;
+      font-size: 16px;
+      color: #222;
+      background: #fff;
+      border: 1px solid #b8bec8;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .headline-button:hover:not(:disabled) { background: #f0f4fa; border-color: #697789; }
+    .headline-button:disabled { cursor: default; opacity: .7; }
+    .headline-button.selected { border: 2px solid #3569a8; background: #edf4ff; }
+    button.primary {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 18px;
+      background: #245da8;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.primary:hover { background: #194a89; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .error { color: #b42318; font-weight: 600; }
+    .success { color: #176b3a; font-weight: 600; }
+    .rating-row { margin: 12px 0 18px; }
+    .rating-row label { display: block; margin-bottom: 7px; }
+    select, textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px;
+      border: 1px solid #b8bec8;
+      border-radius: 7px;
+      font: inherit;
+      background: white;
+    }
+    textarea { min-height: 75px; resize: vertical; }
+    .headline-text { font-weight: 600; margin: 8px 0; }
+    .hidden { display: none; }
+    @media (max-width: 520px) {
+      body { padding: 16px 10px 35px; }
+      .intro, .card, .rating-card { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Nachrichten-Test</h1>
+  <div id="app">
+    <p>Der Test wird geladen ...</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Öffentlicher Supabase-Publishable-Key. Schreibrechte müssen mit RLS-Policies begrenzt sein.
+    const SUPABASE_URL = "https://bltkmbsrvzjokehselko.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_HKcc78JW8kVjXaogUWvQUg_lKTopI9T";
+
+    const app = document.getElementById("app");
+    let supabaseClient;
+    let teilnehmerId;
+    let phase = "auswahl";
+    const auswahl = {};
+
+    const themen = [
+      {
+        id: "schlaf",
+        name: "Schlaf und Konzentration",
+        headlines: [
+          { id: "schlaf_neutral", stufe: "neutral", text: "Studie untersucht den Zusammenhang zwischen Schlafdauer und Konzentration bei Jugendlichen." },
+          { id: "schlaf_uebertreibung", stufe: "uebertreibung", text: "Zu wenig Schlaf kann deine Konzentration massiv verschlechtern!" },
+          { id: "schlaf_kombination", stufe: "kombination", text: "Was Schlafmangel mit deiner Konzentration anrichtet, ist unglaublich!" }
+        ]
+      },
+      {
+        id: "social_media",
+        name: "Social Media",
+        headlines: [
+          { id: "social_neutral", stufe: "neutral", text: "Studie untersucht die Auswirkungen der Social-Media-Nutzung auf Jugendliche." },
+          { id: "social_emotional", stufe: "emotional", text: "Die unterschätzten Folgen von Social Media für Jugendliche." },
+          { id: "social_kombination", stufe: "kombination", text: "Diese erschreckende Wirkung von Social Media kennen die wenigsten!" }
+        ]
+      },
+      {
+        id: "fruehstueck",
+        name: "Frühstück und Konzentration",
+        headlines: [
+          { id: "fruehstueck_neutral", stufe: "neutral", text: "Untersuchung zum Zusammenhang zwischen Frühstück und schulischer Konzentration." },
+          { id: "fruehstueck_uebertreibung", stufe: "uebertreibung", text: "Ein ungünstiges Frühstück kann deine Konzentration massiv beeinträchtigen!" },
+          { id: "fruehstueck_kombination", stufe: "kombination", text: "Dieser Frühstücksfehler könnte deine Konzentration völlig ruinieren!" }
+        ]
+      },
+      {
+        id: "sport",
+        name: "Sport und Wohlbefinden",
+        headlines: [
+          { id: "sport_neutral", stufe: "neutral", text: "Studie untersucht den Einfluss regelmässiger Bewegung auf das Wohlbefinden." },
+          { id: "sport_emotional", stufe: "emotional", text: "Bewegung kann das Wohlbefinden auf erstaunliche Weise verbessern." },
+          { id: "sport_kombination", stufe: "kombination", text: "Was Forschende über diesen Effekt von Bewegung herausgefunden haben, ist verblüffend!" }
+        ]
+      },
+      {
+        id: "plastik",
+        name: "Plastik und Umwelt",
+        headlines: [
+          { id: "plastik_neutral", stufe: "neutral", text: "Bericht untersucht die Auswirkungen des Plastikverbrauchs auf die Umwelt in Europa." },
+          { id: "plastik_emotional", stufe: "emotional", text: "Die alarmierenden Folgen des Plastikverbrauchs für die Umwelt." },
+          { id: "plastik_kombination", stufe: "kombination", text: "Welche Folgen Plastik für unsere Umwelt hat, ist erschreckender als gedacht!" }
+        ]
+      }
+    ];
+
+    // Die Reihenfolge der drei Schlagzeilen wird pro Thema zufällig gemischt.
+    function mischen(liste) {
+      const kopie = [...liste];
+      for (let i = kopie.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [kopie[i], kopie[j]] = [kopie[j], kopie[i]];
+      }
+      return kopie;
+    }
+    const reihenfolge = Object.fromEntries(
+      themen.map(thema => [thema.id, mischen(thema.headlines)])
+    );
+
+    function htmlEsc(text) {
+      return String(text).replace(/[&<>"']/g, zeichen => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[zeichen]);
+    }
+
+    function renderFehler(text) {
+      const element = document.getElementById("fehler");
+      if (element) element.textContent = text;
+    }
+
+    function renderAuswahl() {
+      phase = "auswahl";
+      app.innerHTML = `
+        <div class="intro">
+          <p>In diesem Test siehst du verschiedene Schlagzeilen zu unterschiedlichen Themen. Klicke pro Thema auf die Schlagzeile, deren Artikel du öffnen möchtest. Es gibt keine richtigen oder falschen Antworten.</p>
+          <p class="progress">Teil 1 von 2: Artikel öffnen</p>
+          <p class="small">Bitte wähle pro Thema genau eine Schlagzeile. Beim Anklicken wird der Klick gespeichert und eine simulierte Artikelseite geöffnet.</p>
+        </div>
+        <div id="auswahlBereich"></div>
+        <p id="fehler" class="error" role="alert"></p>
+        <button class="primary" id="weiter" type="button">Weiter zur Bewertung</button>
+      `;
+
+      const bereich = document.getElementById("auswahlBereich");
+      themen.forEach((thema, index) => {
+        const section = document.createElement("section");
+        section.className = "card";
+
+        const title = document.createElement("h2");
+        title.textContent = `${index + 1}. ${thema.name}`;
+        section.appendChild(title);
+
+        const status = document.createElement("p");
+        status.className = "small";
+        status.textContent = auswahl[thema.id] ? "Artikel wurde geöffnet." : "Wähle eine Schlagzeile aus.";
+        section.appendChild(status);
+
+        reihenfolge[thema.id].forEach(headline => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "headline-button";
+          button.textContent = headline.text;
+          button.disabled = Boolean(auswahl[thema.id]);
+          if (auswahl[thema.id] === headline.id) button.classList.add("selected");
+
+          button.addEventListener("click", async () => {
+            if (auswahl[thema.id]) return;
+
+            const artikelFenster = window.open("about:blank", "_blank");
+            if (!artikelFenster) {
+              renderFehler("Der Browser hat das neue Fenster blockiert. Erlaube Pop-ups für diese Website und versuche es erneut.");
+              return;
+            }
+
+            section.querySelectorAll("button").forEach(b => b.disabled = true);
+            renderFehler("");
+
+            try {
+              const { error } = await supabaseClient
+                .from("Klicks")
+                .insert({
+                  link: headline.id,
+                  teilnehmer_id: teilnehmerId,
+                  thema: thema.name,
+                  headline_id: headline.id,
+                  headline: headline.text,
+                  clickbait_stufe: headline.stufe
+                });
+
+              if (error) throw error;
+
+              auswahl[thema.id] = headline.id;
+              const params = new URLSearchParams({
+                thema: thema.name,
+                headline: headline.text,
+                stufe: headline.stufe
+              });
+              artikelFenster.location.href = "artikel.html?" + params.toString();
+              status.textContent = "Artikel wurde geöffnet.";
+              status.className = "small success";
+            } catch (error) {
+              console.error("Klick konnte nicht gespeichert werden:", error);
+              artikelFenster.close();
+              section.querySelectorAll("button").forEach(b => b.disabled = false);
+              renderFehler("Der Klick konnte nicht gespeichert werden. Prüfe die Supabase-Tabelle «Klicks» und deren Insert-Berechtigung.");
+            }
+          });
+          section.appendChild(button);
+        });
+
+        bereich.appendChild(section);
+      });
+
+      document.getElementById("weiter").addEventListener("click", () => {
+        const fehlt = themen.some(thema => !auswahl[thema.id]);
+        if (fehlt) {
+          renderFehler("Bitte öffne zuerst pro Thema einen Artikel.");
+          return;
+        }
+        renderBewertung();
+        window.scrollTo(0, 0);
+      });
+    }
+
+    function renderBewertung() {
+      phase = "bewertung";
+      let inhalt = `
+        <div class="intro">
+          <p>Bewerte jetzt die Vertrauenswürdigkeit jeder Schlagzeile auf einer Skala von 1 bis 5 und begründe deine Einschätzung kurz.</p>
+          <p class="progress">Teil 2 von 2: Vertrauenswürdigkeit bewerten</p>
+          <p class="small">1 = überhaupt nicht vertrauenswürdig · 5 = sehr vertrauenswürdig</p>
+        </div>
+        <form id="bewertungsForm">
+      `;
+
+      themen.forEach(thema => {
+        inhalt += `<section class="card"><h2>${htmlEsc(thema.name)}</h2>`;
+        reihenfolge[thema.id].forEach(headline => {
+          inhalt += `
+            <div class="rating-card">
+              <p class="headline-text">${htmlEsc(headline.text)}</p>
+              <div class="rating-row">
+                <label for="rating_${headline.id}">Wie vertrauenswürdig ist diese Schlagzeile? (1–5)</label>
+                <select id="rating_${headline.id}" name="rating_${headline.id}" required>
+                  <option value="">Bitte auswählen</option>
+                  <option value="1">1 – überhaupt nicht vertrauenswürdig</option>
+                  <option value="2">2 – eher nicht vertrauenswürdig</option>
+                  <option value="3">3 – teils/teils</option>
+                  <option value="4">4 – eher vertrauenswürdig</option>
+                  <option value="5">5 – sehr vertrauenswürdig</option>
+                </select>
+              </div>
+              <div class="rating-row">
+                <label for="grund_${headline.id}">Begründung deiner Einschätzung</label>
+                <textarea id="grund_${headline.id}" name="grund_${headline.id}" required placeholder="Warum schätzt du die Schlagzeile so ein?"></textarea>
+              </div>
+            </div>
+          `;
+        });
+        inhalt += `</section>`;
+      });
+
+      inhalt += `
+          <p id="fehler" class="error" role="alert"></p>
+          <button class="primary" id="absenden" type="submit">Antworten absenden</button>
+        </form>
+      `;
+      app.innerHTML = inhalt;
+      document.getElementById("bewertungsForm").addEventListener("submit", speichern);
+    }
+
+    async function speichern(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const absenden = document.getElementById("absenden");
+      absenden.disabled = true;
+      renderFehler("");
+
+      const daten = [];
+      themen.forEach(thema => {
+        thema.headlines.forEach(headline => {
+          const rating = document.getElementById(`rating_${headline.id}`).value;
+          const begruendung = document.getElementById(`grund_${headline.id}`).value.trim();
+          daten.push({
+            teilnehmer_id: teilnehmerId,
+            thema: thema.name,
+            headline_id: headline.id,
+            headline: headline.text,
+            clickbait_stufe: headline.stufe,
+            ausgewaehlt: auswahl[thema.id] === headline.id,
+            glaubwuerdigkeit: Number(rating),
+            begruendung: begruendung
+          });
+        });
+      });
+
+      try {
+        const { error } = await supabaseClient.from("Testantworten").insert(daten);
+        if (error) throw error;
+
+        app.innerHTML = `
+          <div class="intro">
+            <h2>Vielen Dank!</h2>
+            <p>Deine Antworten wurden gespeichert. Du kannst dieses Fenster jetzt schliessen.</p>
+          </div>
+        `;
+      } catch (error) {
+        console.error("Antworten konnten nicht gespeichert werden:", error);
+        renderFehler("Die Antworten konnten nicht gespeichert werden. Prüfe die Tabelle «Testantworten» und deren Insert-Berechtigung. Deine Eingaben sind noch da, du kannst erneut absenden.");
+        absenden.disabled = false;
+      }
+    }
+
+    async function starten() {
+      try {
+        if (!window.supabase || !window.supabase.createClient) {
+          throw new Error("Die Supabase-Bibliothek wurde nicht geladen.");
+        }
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        teilnehmerId = crypto.randomUUID();
+        renderAuswahl();
+      } catch (error) {
+        console.error("Test konnte nicht gestartet werden:", error);
+        app.innerHTML = `
+          <div class="intro">
+            <h2>Der Test konnte nicht geladen werden</h2>
+            <p>Prüfe deine Internetverbindung und ob die Supabase-Bibliothek geladen wird.</p>
+            <p class="small">Technischer Hinweis: ${htmlEsc(error.message || String(error))}</p>
+          </div>
+        `;
+      }
+    }
+
+    starten();
+  </script>
+</body>
+</html>
