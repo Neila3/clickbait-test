@@ -6,1037 +6,425 @@
   <title>Nachrichten-Test</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --ink: #17191d;
-      --muted: #626873;
-      --line: #d9dce1;
-      --paper: #ffffff;
-      --page: #f0f1f3;
-      --accent: #c51f32;
-      --accent-dark: #a81628;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--page);
-      color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.55;
-    }
-
-    .topline {
-      height: 7px;
-      background: var(--accent);
-    }
-
-    .masthead {
-      background: #fff;
-      border-bottom: 1px solid #d5d7db;
-    }
-
-    .masthead-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 22px 24px 16px;
-    }
-
-    .brand {
-      margin: 0;
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: clamp(29px, 4vw, 42px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-    }
-
-    .brand span { color: var(--accent); }
-
-    .tagline {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .navline {
-      background: #191b20;
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .navline-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 11px 24px;
-    }
-
-    main {
-      max-width: 920px;
-      margin: 28px auto 50px;
-      padding: 30px 34px 36px;
-      background: var(--paper);
-      border: 1px solid #e0e2e6;
-      box-shadow: 0 3px 12px #1111110a;
-    }
-
-    .section-kicker {
-      margin: 0 0 7px;
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.3px;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: clamp(28px, 4vw, 38px);
-      line-height: 1.15;
-      letter-spacing: -.6px;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 23px;
-      line-height: 1.25;
-    }
-
-    .intro {
-      color: #4d535c;
-      font-size: 16px;
-      max-width: 760px;
-    }
-
-    .part-title {
-      margin: 24px 0 10px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-    }
-
-    .thema {
-      margin: 24px 0;
-      padding: 20px 22px 22px;
-      border: 1px solid var(--line);
-      border-top: 3px solid #202329;
-      background: #fff;
-    }
-
-    .thema h2 { margin-bottom: 14px; }
-
-    .headline {
-      display: block;
-      width: 100%;
-      text-align: left;
-      background: #fff;
-      border: 1px solid #d7d9de;
-      border-left: 4px solid #c8cbd1;
-      padding: 15px 16px;
-      margin-top: 10px;
-      cursor: pointer;
-      font-size: 17px;
-      line-height: 1.4;
-      font-weight: 700;
-      color: var(--ink);
-      transition: border-color .15s, background .15s, transform .15s;
-    }
-
-    .headline:hover:not(:disabled) {
-      border-color: #aeb2ba;
-      border-left-color: var(--accent);
-      background: #fafafa;
-    }
-
-    .headline.ausgewaehlt {
-      border-color: #276749;
-      border-left-color: #276749;
-      background: #f0f8f2;
-    }
-
-    .headline:disabled {
-      cursor: default;
-      opacity: .75;
-    }
-
-    .stufe {
-      display: block;
-      margin-top: 7px;
-      color: #727781;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-    }
-
-    .status {
-      color: #276749;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .primary {
-      border: 0;
-      padding: 14px 22px;
-      background: var(--accent);
-      color: white;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 18px;
-      transition: background .15s;
-    }
-
-    .primary:hover:not(:disabled) {
-      background: var(--accent-dark);
-    }
-
-    .primary:disabled {
-      opacity: .4;
-      cursor: not-allowed;
-    }
-
-    .frage {
-      border-top: 1px solid var(--line);
-      padding: 19px 0;
-    }
-    .frage > label, .frage-titel {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 9px;
-    }
-    .optionen {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      margin: 10px 0 4px;
-    }
-    .optionen label {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      cursor: pointer;
-      font-weight: 400;
-    }
-    .frage input[type="text"], .frage input[type="number"] {
-      width: 100%;
-      max-width: 420px;
-      padding: 11px;
-      font: inherit;
-      border: 1px solid #c8cbd1;
-      margin-top: 5px;
-    }
-    .frage textarea { margin-top: 5px; }
-
-    .bewertung {
-      border-top: 1px solid var(--line);
-      padding: 20px 0;
-    }
-
-    .bewertung strong {
-      display: block;
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 18px;
-      line-height: 1.4;
-    }
-
-    .skala {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin: 12px 0;
-    }
-
-    .skala label { cursor: pointer; }
-
-    textarea {
-      display: block;
-      width: 100%;
-      min-height: 82px;
-      padding: 11px;
-      font: inherit;
-      border: 1px solid #c8cbd1;
-      margin-top: 8px;
-      resize: vertical;
-    }
-
-    textarea:focus {
-      outline: 2px solid #e9a0a8;
-      border-color: var(--accent);
-    }
-
-    .hinweis {
-      padding: 14px 16px;
-      border-left: 4px solid var(--accent);
-      background: #f4f4f5;
-      margin: 16px 0 22px;
-      color: #414650;
-    }
-
-    .fehler { color: #a61b1b; }
-    .versteckt { display: none; }
-    #meldung { margin-top: 18px; }
-
-    .footerline {
-      max-width: 920px;
-      margin: -32px auto 28px;
-      padding: 0 34px;
-      color: #747984;
-      font-size: 11px;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-    }
-
-    @media (max-width: 600px) {
-      .masthead-inner {
-        padding: 18px 17px 13px;
-      }
-
-      .navline-inner {
-        padding: 10px 17px;
-      }
-
-      main {
-        margin: 16px 10px 42px;
-        padding: 22px 17px 26px;
-      }
-
-      .thema {
-        padding: 16px 13px 18px;
-      }
-
-      .headline {
-        padding: 13px;
-        font-size: 16px;
-      }
-
-      .skala { gap: 12px; }
-
-      .footerline {
-        margin: -26px 10px 22px;
-        padding: 0 7px;
-      }
-    }
+    :root{--ink:#17191d;--muted:#626873;--line:#d9dce1;--paper:#fff;--page:#f0f1f3;--accent:#c51f32;--accent-dark:#a81628}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.55}
+    .topline{height:7px;background:var(--accent)}
+    .masthead{background:#fff;border-bottom:1px solid #d5d7db}
+    .masthead-inner,.navline-inner{max-width:1040px;margin:auto;padding:22px 24px 16px}
+    .brand{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:clamp(29px,4vw,42px);font-weight:800;letter-spacing:-1.5px;line-height:1.1}
+    .brand span{color:var(--accent)}
+    .tagline{margin:7px 0 0;color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase}
+    .navline{background:#191b20;color:#fff;font-size:12px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
+    .navline-inner{padding-top:11px;padding-bottom:11px}
+    main{max-width:920px;margin:28px auto 50px;padding:30px 34px 36px;background:var(--paper);border:1px solid #e0e2e6;box-shadow:0 3px 12px #1111110a}
+    .section-kicker{margin:0 0 7px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}
+    h1{margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,4vw,38px);line-height:1.15}
+    h2{font-family:Georgia,'Times New Roman',serif;font-size:23px;line-height:1.25}
+    .intro{color:#4d535c;font-size:16px;max-width:760px}
+    .part-title{margin:24px 0 10px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+    .frage,.bewertung{border-top:1px solid var(--line);padding:19px 0}
+    .frage>label,.frage-titel{display:block;font-weight:700;margin-bottom:9px}
+    .optionen{display:flex;flex-wrap:wrap;gap:10px 18px;margin:10px 0 4px}
+    .optionen label{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-weight:400}
+    input[type=text],input[type=number],textarea{width:100%;max-width:420px;padding:11px;font:inherit;border:1px solid #c8cbd1;margin-top:5px}
+    textarea{display:block;max-width:100%;min-height:82px;resize:vertical}
+    textarea:focus{outline:2px solid #e9a0a8;border-color:var(--accent)}
+    .primary{border:0;padding:14px 22px;background:var(--accent);color:white;font-size:15px;font-weight:700;cursor:pointer;margin-top:18px}
+    .primary:hover:not(:disabled){background:var(--accent-dark)}
+    .primary:disabled{opacity:.4;cursor:not-allowed}
+    .thema{margin:24px 0;padding:20px 22px 22px;border:1px solid var(--line);border-top:3px solid #202329;background:#fff}
+    .thema h2{margin:0 0 14px}
+    .headline{display:block;width:100%;text-align:left;background:#fff;border:1px solid #d7d9de;border-left:4px solid #c8cbd1;padding:15px 16px;margin-top:10px;cursor:pointer;font-size:17px;line-height:1.4;font-weight:700;color:var(--ink)}
+    .headline:hover:not(:disabled){border-color:#aeb2ba;border-left-color:var(--accent);background:#fafafa}
+    .headline.ausgewaehlt{border-color:#276749;border-left-color:#276749;background:#f0f8f2}
+    .headline:disabled{cursor:default;opacity:.75}
+    .stufe{display:block;margin-top:7px;color:#727781;font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase}
+    .status{color:#276749;font-weight:bold;font-size:14px}
+    .skala{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0}
+    .skala label{cursor:pointer}
+    .hinweis{padding:14px 16px;border-left:4px solid var(--accent);background:#f4f4f5;margin:16px 0 22px;color:#414650}
+    .fehler{color:#a61b1b}.versteckt{display:none}#meldung{margin-top:18px}
+    .footerline{max-width:920px;margin:-32px auto 28px;padding:0 34px;color:#747984;font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+    @media(max-width:600px){.masthead-inner,.navline-inner{padding-left:17px;padding-right:17px}main{margin:16px 10px 42px;padding:22px 17px 26px}.thema{padding:16px 13px 18px}.headline{padding:13px;font-size:16px}.footerline{margin:-26px 10px 22px;padding:0 7px}}
   </style>
 </head>
 <body>
   <div class="topline"></div>
-
-  <header class="masthead">
-    <div class="masthead-inner">
-      <p class="brand">DIE <span>NACHRICHTEN</span></p>
-      <p class="tagline">Aktuelles · Wissen · Gesellschaft</p>
-    </div>
-  </header>
-
-  <div class="navline">
-    <div class="navline-inner">
-      Nachrichten-Test &nbsp; / &nbsp; Schlagzeilen im Fokus
-    </div>
-  </div>
-
-  <main>
+  <header class="masthead"><div class="masthead-inner">
+    <p class="brand">DIE <span>NACHRICHTEN</span></p>
+    <p class="tagline">Aktuelles · Wissen · Gesellschaft</p>
+  </div></header>
+  <div class="navline"><div class="navline-inner">Nachrichten-Test &nbsp; / &nbsp; Schlagzeilen im Fokus</div></div>
+  <main id="app">
     <p class="section-kicker">Interaktive Untersuchung</p>
-    <h1>Welche Schlagzeile weckt dein Interesse?</h1>
+    <h1>Fragebogen</h1>
+    <p class="intro">Beantworte zuerst einige Fragen zu deinem Medienverhalten. Die Angaben werden anonym ausgewertet. Es gibt keine richtigen oder falschen Antworten.</p>
+    <p class="part-title">Teil 1 von 3: Fragebogen</p>
 
-    <section id="fragebogenBereich">
-      <p class="intro">Beantworte zuerst einige Fragen zu deinem Medienverhalten. Die Angaben werden anonym ausgewertet. Es gibt keine richtigen oder falschen Antworten.</p>
-      <p class="part-title">Teil 1 von 3: Fragebogen</p>
-      <div id="fragebogen">
-        <div class="frage"><span class="frage-titel">1. Geschlecht</span><div class="optionen">
-          <label><input type="radio" name="geschlecht" value="Weiblich" required> Weiblich</label>
-          <label><input type="radio" name="geschlecht" value="Männlich"> Männlich</label>
-          <label><input type="radio" name="geschlecht" value="Divers"> Divers</label>
-        </div></div>
-        <div class="frage"><label for="alter">2. Alter</label><input id="alter" type="number" min="10" max="100" step="1" required></div>
-        <div class="frage"><label for="klasse">3. Klasse</label><input id="klasse" type="text" maxlength="50" required></div>
-        <div class="frage"><label for="notensumme">4. Summe der fünf tiefsten Noten im letzten Zeugnis</label>
-          <input id="notensumme" type="number" min="5" max="30" step="0.5" placeholder="Notensumme eingeben">
-          <div class="optionen"><label><input type="checkbox" id="noteUnbekannt"> Weiss ich nicht mehr</label></div>
-        </div>
-        <div class="frage"><span class="frage-titel">5. Wie viel Zeit verbringst du durchschnittlich täglich online?</span><div class="optionen">
-          <label><input type="radio" name="onlinezeit" value="Weniger als eine Stunde" required> Weniger als eine Stunde</label>
-          <label><input type="radio" name="onlinezeit" value="1 bis 3 Stunden"> 1 bis 3 Stunden</label>
-          <label><input type="radio" name="onlinezeit" value="3 bis 5 Stunden"> 3 bis 5 Stunden</label>
-          <label><input type="radio" name="onlinezeit" value="Mehr als 5 Stunden"> Mehr als 5 Stunden</label>
-        </div></div>
-        <div class="frage"><span class="frage-titel">6. Wie viel deiner Online-Zeit nutzt du bewusst, um dich über Tagesaktualitäten zu informieren?</span><div class="optionen">
-          <label><input type="radio" name="nachrichtenzeit" value="Weniger als 10 Minuten" required> Weniger als 10 Minuten</label>
-          <label><input type="radio" name="nachrichtenzeit" value="10 bis 20 Minuten"> 10 bis 20 Minuten</label>
-          <label><input type="radio" name="nachrichtenzeit" value="20 bis 30 Minuten"> 20 bis 30 Minuten</label>
-          <label><input type="radio" name="nachrichtenzeit" value="Mehr als 30 Minuten"> Mehr als 30 Minuten</label>
-          <label><input type="radio" name="nachrichtenzeit" value="Ich bin nur online, um mich über Tagesaktualitäten zu informieren"> Ich bin nur online, um mich über Tagesaktualitäten zu informieren</label>
-        </div></div>
-        <div class="frage"><label for="freizeit">7. Mit was beschäftigst du dich in deiner Freizeit?</label><textarea id="freizeit" maxlength="1000" required></textarea></div>
-        <div class="frage"><span class="frage-titel">8. Welche Medien nutzt du am häufigsten? (Mehrfachauswahl möglich)</span><div class="optionen">
-          <label><input type="checkbox" name="medien" value="TV"> TV</label>
-          <label><input type="checkbox" name="medien" value="Radio"> Radio</label>
-          <label><input type="checkbox" name="medien" value="Zeitung"> Zeitung</label>
-          <label><input type="checkbox" name="medien" value="Social Media"> Social Media</label>
-        </div></div>
-        <div class="frage"><span class="frage-titel">9. Für welche Themen interessierst du dich? (Mehrfachauswahl möglich)</span><div class="optionen">
-          <label><input type="checkbox" name="interessen" value="Politik"> Politik</label>
-          <label><input type="checkbox" name="interessen" value="Wissenschaft"> Wissenschaft</label>
-          <label><input type="checkbox" name="interessen" value="Gesellschaft"> Gesellschaft</label>
-          <label><input type="checkbox" name="interessen" value="Sport"> Sport</label>
-          <label><input type="checkbox" name="interessen" value="Promis"> Promis</label>
-        </div></div>
-        <div class="frage"><span class="frage-titel">10. Klickst du auf eine Schlagzeile, auch wenn du weisst, dass sie Clickbait enthält?</span><div class="optionen">
-          <label><input type="radio" name="clickbait_klick" value="Ja" required> Ja</label>
-          <label><input type="radio" name="clickbait_klick" value="Nein"> Nein</label>
-        </div><label for="clickbait_warum">Warum oder warum nicht?</label><textarea id="clickbait_warum" maxlength="1000" required></textarea></div>
-        <div class="frage"><span class="frage-titel">11. Wie kritisch würdest du deinen Umgang mit Medien in deinem Alltag einschätzen?</span>
-          <p class="intro">1 = Gar nicht kritisch, 5 = Sehr kritisch</p><div class="optionen">
-          <label><input type="radio" name="selbsteinschaetzung" value="1" required> 1</label>
-          <label><input type="radio" name="selbsteinschaetzung" value="2"> 2</label>
-          <label><input type="radio" name="selbsteinschaetzung" value="3"> 3</label>
-          <label><input type="radio" name="selbsteinschaetzung" value="4"> 4</label>
-          <label><input type="radio" name="selbsteinschaetzung" value="5"> 5</label>
-        </div></div>
-        <div class="frage"><span class="frage-titel">12. Welche Nachrichtenportale nutzt du am häufigsten? (Mehrfachauswahl möglich)</span><div class="optionen">
-          <label><input type="checkbox" name="portale" value="Blick"> Blick</label>
-          <label><input type="checkbox" name="portale" value="20 Minuten"> 20 Minuten</label>
-          <label><input type="checkbox" name="portale" value="SRF"> SRF</label>
-          <label><input type="checkbox" name="portale" value="Watson"> Watson</label>
-          <label><input type="checkbox" id="portalAndere" name="portale" value="Andere"> Andere</label>
-        </div><label for="portalAndereText">Falls andere: Welche?</label><input id="portalAndereText" type="text" maxlength="200"></div>
+    <form id="fragebogenForm">
+      <div class="frage"><span class="frage-titel">1. Geschlecht</span><div class="optionen">
+        <label><input type="radio" name="geschlecht" value="Weiblich" required> Weiblich</label>
+        <label><input type="radio" name="geschlecht" value="Männlich"> Männlich</label>
+        <label><input type="radio" name="geschlecht" value="Divers"> Divers</label>
+      </div></div>
+      <div class="frage"><label for="alter">2. Alter</label><input id="alter" type="number" min="10" max="100" step="1" required></div>
+      <div class="frage"><label for="klasse">3. Klasse</label><input id="klasse" type="text" maxlength="50" required></div>
+      <div class="frage"><label for="notensumme">4. Summe der fünf tiefsten Noten im letzten Zeugnis</label>
+        <input id="notensumme" type="number" min="5" max="30" step="0.5" placeholder="Notensumme eingeben">
+        <div class="optionen"><label><input type="checkbox" id="notensummeUnbekannt"> Weiss ich nicht mehr</label></div>
       </div>
-      <button id="fragebogenWeiterButton" class="primary">Weiter zur Schlagzeilenauswahl</button>
-    </section>
-
-    <section id="auswahlBereich" class="versteckt">
-      <p class="intro">In diesem Test siehst du Schlagzeilen zu verschiedenen Themen. Wähle pro Thema die Schlagzeile aus, deren Artikel du öffnen möchtest. Es gibt keine richtigen oder falschen Antworten.</p>
-      <p class="part-title">Teil 2 von 3: Schlagzeilen auswählen</p>
-      <p class="hinweis">Klicke pro Thema genau eine Schlagzeile an. Der Artikel öffnet sich in einem neuen Tab. Lies ihn dort und kehre anschliessend zu diesem Test zurück.</p>
-      <div id="auswahl"></div>
-      <p id="auswahlStatus" class="status">0 von 5 Themen ausgewählt.</p>
-      <button id="weiterButton" class="primary" disabled>Weiter zur Bewertung</button>
-    </section>
-
-    <section id="bewertungBereich" class="versteckt">
-      <h2>Teil 3 von 3: Schlagzeilen bewerten</h2>
-      <p class="intro">Bewerte, wie aussagekräftig du jede Schlagzeile findest. Begründe deine Einschätzung kurz. Es gibt keine richtigen oder falschen Antworten.</p>
-      <div id="bewertungen"></div>
-      <button id="absendenButton" class="primary">Antworten abschicken</button>
-    </section>
-
+      <div class="frage"><span class="frage-titel">5. Wie viel Zeit verbringst du durchschnittlich täglich online?</span><div class="optionen">
+        <label><input type="radio" name="onlinezeit" value="Weniger als eine Stunde" required> Weniger als eine Stunde</label>
+        <label><input type="radio" name="onlinezeit" value="1 bis 3 Stunden"> 1 bis 3 Stunden</label>
+        <label><input type="radio" name="onlinezeit" value="3 bis 5 Stunden"> 3 bis 5 Stunden</label>
+        <label><input type="radio" name="onlinezeit" value="Mehr als 5 Stunden"> Mehr als 5 Stunden</label>
+      </div></div>
+      <div class="frage"><span class="frage-titel">6. Wie viel deiner Online-Zeit nutzt du bewusst, um dich über Tagesaktualitäten zu informieren?</span><div class="optionen">
+        <label><input type="radio" name="nachrichtenzeit" value="Weniger als 10 Minuten" required> Weniger als 10 Minuten</label>
+        <label><input type="radio" name="nachrichtenzeit" value="10 bis 20 Minuten"> 10 bis 20 Minuten</label>
+        <label><input type="radio" name="nachrichtenzeit" value="20 bis 30 Minuten"> 20 bis 30 Minuten</label>
+        <label><input type="radio" name="nachrichtenzeit" value="Mehr als 30 Minuten"> Mehr als 30 Minuten</label>
+        <label><input type="radio" name="nachrichtenzeit" value="Ich bin nur online, um mich über Tagesaktualitäten zu informieren"> Ich bin nur online, um mich über Tagesaktualitäten zu informieren</label>
+      </div></div>
+      <div class="frage"><label for="freizeit">7. Mit was beschäftigst du dich in deiner Freizeit?</label><textarea id="freizeit" maxlength="1000" required></textarea></div>
+      <div class="frage"><span class="frage-titel">8. Welche Medien nutzt du am häufigsten? (Mehrfachauswahl möglich)</span><div class="optionen">
+        <label><input type="checkbox" name="medien" value="TV"> TV</label>
+        <label><input type="checkbox" name="medien" value="Radio"> Radio</label>
+        <label><input type="checkbox" name="medien" value="Zeitung"> Zeitung</label>
+        <label><input type="checkbox" name="medien" value="Social Media"> Social Media</label>
+      </div></div>
+      <div class="frage"><span class="frage-titel">9. Für welche Themen interessierst du dich? (Mehrfachauswahl möglich)</span><div class="optionen">
+        <label><input type="checkbox" name="interessen" value="Politik"> Politik</label>
+        <label><input type="checkbox" name="interessen" value="Wissenschaft"> Wissenschaft</label>
+        <label><input type="checkbox" name="interessen" value="Gesellschaft"> Gesellschaft</label>
+        <label><input type="checkbox" name="interessen" value="Sport"> Sport</label>
+        <label><input type="checkbox" name="interessen" value="Promis"> Promis</label>
+      </div></div>
+      <div class="frage"><span class="frage-titel">10. Klickst du auf eine Schlagzeile, auch wenn du weisst, dass sie Clickbait enthält?</span><div class="optionen">
+        <label><input type="radio" name="clickbait_klick" value="Ja" required> Ja</label>
+        <label><input type="radio" name="clickbait_klick" value="Nein"> Nein</label>
+      </div><label for="clickbaitWarum">Warum oder warum nicht?</label><textarea id="clickbaitWarum" maxlength="1000" required></textarea></div>
+      <div class="frage"><span class="frage-titel">11. Wie kritisch würdest du deinen Umgang mit Medien in deinem Alltag einschätzen?</span>
+        <p class="intro">1 = Gar nicht kritisch, 5 = Sehr kritisch</p><div class="optionen">
+        <label><input type="radio" name="selbsteinschaetzung" value="1" required> 1</label>
+        <label><input type="radio" name="selbsteinschaetzung" value="2"> 2</label>
+        <label><input type="radio" name="selbsteinschaetzung" value="3"> 3</label>
+        <label><input type="radio" name="selbsteinschaetzung" value="4"> 4</label>
+        <label><input type="radio" name="selbsteinschaetzung" value="5"> 5</label>
+      </div></div>
+      <div class="frage"><span class="frage-titel">12. Welche Nachrichtenportale nutzt du am häufigsten? (Mehrfachauswahl möglich)</span><div class="optionen">
+        <label><input type="checkbox" name="portale" value="Blick"> Blick</label>
+        <label><input type="checkbox" name="portale" value="20 Minuten"> 20 Minuten</label>
+        <label><input type="checkbox" name="portale" value="SRF"> SRF</label>
+        <label><input type="checkbox" name="portale" value="Watson"> Watson</label>
+        <label><input type="checkbox" name="portale" value="Andere" id="portalAndere"> Andere</label>
+      </div><label for="portalAndereText">Falls andere: Welche?</label><input id="portalAndereText" type="text" maxlength="200"></div>
+      <button id="fragebogenWeiterButton" type="submit" class="primary">Weiter zur Schlagzeilenauswahl</button>
+    </form>
     <p id="meldung" role="status"></p>
   </main>
+  <div class="footerline">Untersuchung zu Schlagzeilen und Medienwahrnehmung</div>
 
-  <div class="footerline">
-    Untersuchung zu Schlagzeilen und Medienwahrnehmung
-  </div>
+<script>
+"use strict";
 
-  <script>
-    const SUPABASE_URL = "https://bltkmbsrvzjokehselko.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_HKcc78JW8kVjXaogUWvQUg_lKTopI9T";
+const SUPABASE_URL = "https://bltkmbsrvzjokehselko.supabase.co";
+const SUPABASE_KEY = "sb_publishable_HKcc78JW8kVjXaogUWvQUg_lKTopI9T";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const app = document.getElementById("app");
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+let teilnehmerId = sessionStorage.getItem("clickbait_teilnehmer_id");
+if (!teilnehmerId) {
+  teilnehmerId = crypto.randomUUID();
+  sessionStorage.setItem("clickbait_teilnehmer_id", teilnehmerId);
+}
 
-    const teilnehmerId = (() => {
-      let id = sessionStorage.getItem("clickbait_teilnehmer_id");
+const themen = [
+  {id:"schlaf",name:"Schlaf und Konzentration",headlines:[
+    {id:"schlaf_neutral",text:"Eine Studie untersucht den Zusammenhang zwischen Schlaf und Konzentration",stufe:1},
+    {id:"schlaf_uebertreibung",text:"Zu wenig Schlaf kann deine Konzentration deutlich beeinträchtigen",stufe:2},
+    {id:"schlaf_kombination",text:"Diese eine Schlafgewohnheit könnte deine Konzentration ruinieren",stufe:3}]},
+  {id:"social",name:"Soziale Medien",headlines:[
+    {id:"social_neutral",text:"Forschende untersuchen die Auswirkungen sozialer Medien auf Jugendliche",stufe:1},
+    {id:"social_emotional",text:"Ständiger Vergleich auf Social Media kann Jugendliche belasten",stufe:2},
+    {id:"social_kombination",text:"Was Social Media mit deinem Kopf macht, ist krass",stufe:3}]},
+  {id:"fruehstueck",name:"Frühstück und Konzentration",headlines:[
+    {id:"fruehstueck_neutral",text:"Eine Untersuchung beschäftigt sich mit Frühstück und schulischer Konzentration",stufe:1},
+    {id:"fruehstueck_uebertreibung",text:"Das Frühstück kann beeinflussen, wie konzentriert man sich fühlt",stufe:2},
+    {id:"fruehstueck_kombination",text:"Ohne dieses Frühstück verschenkst du dein ganzes Konzentrationspotenzial",stufe:3}]},
+  {id:"sport",name:"Sport und Wohlbefinden",headlines:[
+    {id:"sport_neutral",text:"Studie untersucht den Zusammenhang zwischen Bewegung und Wohlbefinden",stufe:1},
+    {id:"sport_emotional",text:"Regelmässige Bewegung kann das psychische Wohlbefinden unterstützen",stufe:2},
+    {id:"sport_kombination",text:"Schon ein bisschen Sport kann alles verändern, sagen Forschende",stufe:3}]},
+  {id:"plastik",name:"Plastik und Umwelt",headlines:[
+    {id:"plastik_neutral",text:"Forschende untersuchen die Auswirkungen von Plastik auf die Umwelt",stufe:1},
+    {id:"plastik_emotional",text:"Plastikverschmutzung stellt Ökosysteme vor grosse Herausforderungen",stufe:2},
+    {id:"plastik_kombination",text:"Was unser Plastikmüll anrichtet, ist erschreckender als gedacht",stufe:3}]}
+];
 
-      if (!id) {
-        id = crypto.randomUUID();
-        sessionStorage.setItem("clickbait_teilnehmer_id", id);
-      }
+const ausgewaehlt = {};
 
-      return id;
-    })();
+function zeigeMeldung(text, fehler=false) {
+  const element = document.getElementById("meldung");
+  if (!element) return;
+  element.textContent = text;
+  element.className = fehler ? "fehler" : "";
+}
 
-    const themen = [      {
-        id: "schlaf",
-        name: "Schlaf und Konzentration",
-        headlines: [
-          {
-            id: "schlaf_neutral",
-            text: "Eine Studie untersucht den Zusammenhang zwischen Schlaf und Konzentration",
-            stufe: 1
-          },
-          {
-            id: "schlaf_uebertreibung",
-            text: "Zu wenig Schlaf kann deine Konzentration deutlich beeinträchtigen",
-            stufe: 2
-          },
-          {
-            id: "schlaf_kombination",
-            text: "Diese eine Schlafgewohnheit könnte deine Konzentration ruinieren",
-            stufe: 3
-          }
-        ]
-      },
-      {
-        id: "social",
-        name: "Soziale Medien",
-        headlines: [
-          {
-            id: "social_neutral",
-            text: "Forschende untersuchen die Auswirkungen sozialer Medien auf Jugendliche",
-            stufe: 1
-          },
-          {
-            id: "social_emotional",
-            text: "Ständiger Vergleich auf Social Media kann Jugendliche belasten",
-            stufe: 2
-          },
-          {
-            id: "social_kombination",
-            text: "Was Social Media mit deinem Kopf macht, ist krass",
-            stufe: 3
-          }
-        ]
-      },
-      {
-        id: "fruehstueck",
-        name: "Frühstück und Konzentration",
-        headlines: [
-          {
-            id: "fruehstueck_neutral",
-            text: "Eine Untersuchung beschäftigt sich mit Frühstück und schulischer Konzentration",
-            stufe: 1
-          },
-          {
-            id: "fruehstueck_uebertreibung",
-            text: "Das Frühstück kann beeinflussen, wie konzentriert man sich fühlt",
-            stufe: 2
-          },
-          {
-            id: "fruehstueck_kombination",
-            text: "Ohne dieses Frühstück verschenkst du dein ganzes Konzentrationspotenzial",
-            stufe: 3
-          }
-        ]
-      },
-      {
-        id: "sport",
-        name: "Sport und Wohlbefinden",
-        headlines: [
-          {
-            id: "sport_neutral",
-            text: "Studie untersucht den Zusammenhang zwischen Bewegung und Wohlbefinden",
-            stufe: 1
-          },
-          {
-            id: "sport_emotional",
-            text: "Regelmässige Bewegung kann das psychische Wohlbefinden unterstützen",
-            stufe: 2
-          },
-          {
-            id: "sport_kombination",
-            text: "Schon ein bisschen Sport kann alles verändern, sagen Forschende",
-            stufe: 3
-          }
-        ]
-      },
-      {
-        id: "plastik",
-        name: "Plastik und Umwelt",
-        headlines: [
-          {
-            id: "plastik_neutral",
-            text: "Forschende untersuchen die Auswirkungen von Plastik auf die Umwelt",
-            stufe: 1
-          },
-          {
-            id: "plastik_emotional",
-            text: "Plastikverschmutzung stellt Ökosysteme vor grosse Herausforderungen",
-            stufe: 2
-          },
-          {
-            id: "plastik_kombination",
-            text: "Was unser Plastikmüll anrichtet, ist erschreckender als gedacht",
-            stufe: 3
-          }
-        ]
-      }
-    ];
+function mischeSchlagzeilenMitTeilnehmerId(liste, id, themaId) {
+  const sortiert = [...liste];
+  let seed = 0;
+  const text = id + themaId;
+  for (let i=0;i<text.length;i++) seed = (seed * 31 + text.charCodeAt(i)) >>> 0;
+  for (let i=sortiert.length-1;i>0;i--) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const j = seed % (i+1);
+    [sortiert[i],sortiert[j]] = [sortiert[j],sortiert[i]];
+  }
+  return sortiert;
+}
 
-    const ausgewaehlt = {};
-    const bewertungen = {};
-    let phase = "fragebogen";
+document.getElementById("notensumme").addEventListener("input", () => {
+  if (document.getElementById("notensumme").value) {
+    document.getElementById("notensummeUnbekannt").checked = false;
+  }
+});
+document.getElementById("notensummeUnbekannt").addEventListener("change", () => {
+  if (document.getElementById("notensummeUnbekannt").checked) {
+    document.getElementById("notensumme").value = "";
+  }
+});
 
-    function mischeSchlagzeilenMitTeilnehmerId(liste, teilnehmerId, themaId) {
-      const sortiert = [...liste];
-      let seed = 0;
+document.getElementById("portalAndere").addEventListener("change", event => {
+  document.getElementById("portalAndereText").required = event.target.checked;
+});
 
-      const text = teilnehmerId + themaId;
-      for (let i = 0; i < text.length; i++) {
-        seed = (seed * 31 + text.charCodeAt(i)) >>> 0;
-      }
+document.getElementById("fragebogenForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = document.getElementById("fragebogenWeiterButton");
+  if (!form.reportValidity()) return;
 
-      for (let i = sortiert.length - 1; i > 0; i--) {
-        seed = (seed * 1664525 + 1013904223) >>> 0;
-        const j = seed % (i + 1);
-        [sortiert[i], sortiert[j]] = [sortiert[j], sortiert[i]];
-      }
+  const notensummeUnbekannt = document.getElementById("notensummeUnbekannt").checked;
+  const notensumme = document.getElementById("notensumme").value;
+  if (!notensummeUnbekannt && !notensumme) {
+    zeigeMeldung("Bitte gib deine Notensumme an oder wähle «Weiss ich nicht mehr».", true);
+    return;
+  }
+  if (notensummeUnbekannt && notensumme) {
+    zeigeMeldung("Bitte gib entweder die Notensumme an oder wähle «Weiss ich nicht mehr».", true);
+    return;
+  }
 
-      return sortiert;
+  const werte = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(x => x.value);
+  const medien = werte("medien");
+  const interessen = werte("interessen");
+  const portale = werte("portale");
+  if (!medien.length || !interessen.length || !portale.length) {
+    zeigeMeldung("Bitte wähle bei den Fragen zu Medien, Interessen und Nachrichtenportalen mindestens eine Antwort.", true);
+    return;
+  }
+  if (document.getElementById("portalAndere").checked && !document.getElementById("portalAndereText").value.trim()) {
+    zeigeMeldung("Bitte gib an, welches andere Nachrichtenportal du nutzt.", true);
+    return;
+  }
+
+  const daten = {
+    teilnehmer_id:teilnehmerId,
+    geschlecht:form.querySelector('input[name="geschlecht"]:checked').value,
+    alter:Number(document.getElementById("alter").value),
+    klasse:document.getElementById("klasse").value.trim(),
+    notensumme:notensummeUnbekannt ? null : Number(notensumme),
+    notensumme_unbekannt:notensummeUnbekannt,
+    onlinezeit:form.querySelector('input[name="onlinezeit"]:checked').value,
+    nachrichtenzeit:form.querySelector('input[name="nachrichtenzeit"]:checked').value,
+    freizeit:document.getElementById("freizeit").value.trim(),
+    medien,interessen,
+    clickbait_klick:form.querySelector('input[name="clickbait_klick"]:checked').value,
+    clickbait_warum:document.getElementById("clickbaitWarum").value.trim(),
+    selbsteinschaetzung:Number(form.querySelector('input[name="selbsteinschaetzung"]:checked').value),
+    portale,
+    portal_andere_text:document.getElementById("portalAndereText").value.trim() || null
+  };
+
+  button.disabled = true;
+  button.textContent = "Wird gespeichert ...";
+  zeigeMeldung("");
+  const {error} = await supabaseClient.from("Hintergrundfragen").insert(daten);
+  if (error) {
+    console.error("Fragebogen konnte nicht gespeichert werden:", error);
+    zeigeMeldung("Deine Antworten konnten nicht gespeichert werden. Bitte prüfe die Tabelle «Hintergrundfragen» und die Insert-Berechtigung in Supabase.", true);
+    button.disabled = false;
+    button.textContent = "Erneut versuchen";
+    return;
+  }
+  renderAuswahl();
+});
+
+function renderAuswahl() {
+  app.innerHTML = `
+    <p class="section-kicker">Interaktive Untersuchung</p>
+    <h1>Welche Schlagzeile weckt dein Interesse?</h1>
+    <p class="intro">In diesem Teil siehst du verschiedene Schlagzeilen zu unterschiedlichen Themen. Wähle pro Thema die Schlagzeile aus, deren Artikel du öffnen möchtest. Es gibt keine richtigen oder falschen Antworten.</p>
+    <p class="part-title">Teil 2 von 3: Schlagzeilen auswählen</p>
+    <div class="hinweis">Wähle bei jedem Thema genau eine Schlagzeile aus und öffne den dazugehörigen Artikel. Der Artikel öffnet sich in einem neuen Tab. Kehre danach zu diesem Test zurück.</div>
+    <div id="auswahlBereich"></div>
+    <p id="auswahlStatus" class="status">0 von 5 Themen ausgewählt.</p>
+    <button id="weiterBewertung" class="primary" disabled>Weiter zur Bewertung</button>
+    <p id="meldung" role="status"></p>`;
+
+  const bereich = document.getElementById("auswahlBereich");
+  themen.forEach(thema => {
+    const block = document.createElement("section");
+    block.className = "thema";
+    const titel = document.createElement("h2");
+    titel.textContent = thema.name;
+    block.appendChild(titel);
+    const liste = document.createElement("div");
+    block.appendChild(liste);
+    const status = document.createElement("p");
+    status.className = "status";
+    status.id = `status-${thema.id}`;
+    block.appendChild(status);
+    mischeSchlagzeilenMitTeilnehmerId(thema.headlines,teilnehmerId,thema.id).forEach(headline => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "headline";
+      button.append(document.createTextNode(headline.text));
+      const label = document.createElement("span");
+      label.className = "stufe";
+      label.textContent = "Schlagzeile auswählen";
+      button.appendChild(label);
+      button.addEventListener("click",() => waehleHeadline(thema,headline,button));
+      liste.appendChild(button);
+    });
+    bereich.appendChild(block);
+  });
+  document.getElementById("weiterBewertung").addEventListener("click",renderBewertung);
+}
+
+async function waehleHeadline(thema,headline,button) {
+  if (ausgewaehlt[thema.id]) return;
+  ausgewaehlt[thema.id] = headline;
+  button.classList.add("ausgewaehlt");
+  button.parentElement.querySelectorAll("button").forEach(b => b.disabled = true);
+  document.getElementById(`status-${thema.id}`).textContent = "Ausgewählt. Der Artikel wird geöffnet.";
+
+  const artikelUrl = new URL("artikel.html",window.location.href);
+  artikelUrl.searchParams.set("thema",thema.name);
+  artikelUrl.searchParams.set("themaId",thema.id);
+  artikelUrl.searchParams.set("headline",headline.text);
+  artikelUrl.searchParams.set("headlineId",headline.id);
+  artikelUrl.searchParams.set("stufe",String(headline.stufe));
+  artikelUrl.searchParams.set("teilnehmerId",teilnehmerId);
+
+  // Den Artikel direkt beim Klick öffnen, damit der Browser das neue Fenster nicht blockiert.
+  const artikelFenster = window.open(artikelUrl.href,"_blank");
+  const {error} = await supabaseClient.from("Klicks").insert({
+    link:artikelUrl.href,
+    teilnehmer_id:teilnehmerId,
+    thema:thema.name,
+    headline_id:headline.id,
+    headline:headline.text,
+    clickbait_stufe:headline.stufe
+  });
+  if (error) console.error("Klick konnte nicht gespeichert werden:",error);
+  if (!artikelFenster) console.warn("Der Browser hat das neue Fenster möglicherweise blockiert.");
+  const anzahl = Object.keys(ausgewaehlt).length;
+  document.getElementById("auswahlStatus").textContent = `${anzahl} von ${themen.length} Themen ausgewählt.`;
+  if (anzahl === themen.length) document.getElementById("weiterBewertung").disabled = false;
+}
+
+function renderBewertung() {
+  app.innerHTML = `
+    <p class="section-kicker">Interaktive Untersuchung</p>
+    <h1>Bewerte die Schlagzeilen</h1>
+    <p class="intro">Bewerte, wie aussagekräftig du jede Schlagzeile findest. Begründe deine Einschätzung kurz. Es gibt keine richtigen oder falschen Antworten.</p>
+    <p class="part-title">Teil 3 von 3: Schlagzeilen bewerten</p>
+    <form id="bewertungForm"><div id="bewertungen"></div>
+      <button type="submit" class="primary">Antworten abschicken</button>
+    </form>
+    <p id="meldung" role="status"></p>`;
+
+  const bereich = document.getElementById("bewertungen");
+  themen.forEach(thema => {
+    const headline = ausgewaehlt[thema.id];
+    if (!headline) return;
+    const block = document.createElement("section");
+    block.className = "bewertung";
+    const kicker = document.createElement("p");
+    kicker.className = "section-kicker";
+    kicker.textContent = thema.name;
+    const strong = document.createElement("strong");
+    strong.textContent = headline.text;
+    const frage = document.createElement("p");
+    frage.textContent = "Wie aussagekräftig findest du diese Schlagzeile?";
+    const skala = document.createElement("div");
+    skala.className = "skala";
+    for (let wert=1;wert<=5;wert++) {
+      const label = document.createElement("label");
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `rating-${thema.id}`;
+      radio.value = String(wert);
+      radio.required = true;
+      label.append(radio,document.createTextNode(` ${wert}`));
+      skala.appendChild(label);
     }
-
-    function renderFragebogen() {
-      phase = "fragebogen";
-
-      app.innerHTML = `
-        <p class="section-kicker">Interaktive Untersuchung</p>
-        <h1>Fragebogen</h1>
-        <p class="intro">
-          Bevor du mit dem Nachrichtentest beginnst, beantworte bitte einige
-          kurze Fragen zu deinem Medienverhalten und deinen Interessen.
-          Deine Antworten werden anonym ausgewertet.
-        </p>
-
-        <div class="part-title">Teil 1 von 3: Fragebogen</div>
-
-        <form id="fragebogenForm">
-          <div class="frage">
-            <label>1. Geschlecht</label>
-            <div class="optionen">
-              <label><input type="radio" name="geschlecht" value="Weiblich" required> Weiblich</label>
-              <label><input type="radio" name="geschlecht" value="Männlich"> Männlich</label>
-              <label><input type="radio" name="geschlecht" value="Divers"> Divers</label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label for="alter">2. Wie alt bist du?</label>
-            <input type="number" id="alter" min="10" max="100" required>
-          </div>
-
-          <div class="frage">
-            <label for="klasse">3. Welche Klasse besuchst du?</label>
-            <input type="text" id="klasse" required>
-          </div>
-
-          <div class="frage">
-            <label for="notensumme">
-              4. Wie hoch ist die Summe deiner fünf tiefsten Noten im letzten Zeugnis?
-            </label>
-            <input type="number" id="notensumme" min="5" max="30" step="0.5">
-            <div class="optionen">
-              <label>
-                <input type="checkbox" id="notensummeUnbekannt">
-                Weiss ich nicht mehr
-              </label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label>5. Wie viel Zeit verbringst du durchschnittlich täglich online?</label>
-            <div class="optionen">
-              <label><input type="radio" name="onlinezeit" value="Weniger als eine Stunde" required> Weniger als eine Stunde</label>
-              <label><input type="radio" name="onlinezeit" value="1 bis 3 Stunden"> 1 bis 3 Stunden</label>
-              <label><input type="radio" name="onlinezeit" value="3 bis 5 Stunden"> 3 bis 5 Stunden</label>
-              <label><input type="radio" name="onlinezeit" value="Mehr als 5 Stunden"> Mehr als 5 Stunden</label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label>6. Wie viel deiner Online-Zeit nutzt du bewusst, um dich über Tagesaktualitäten zu informieren?</label>
-            <div class="optionen">
-              <label><input type="radio" name="nachrichtenzeit" value="Weniger als 10 Minuten" required> Weniger als 10 Minuten</label>
-              <label><input type="radio" name="nachrichtenzeit" value="10 bis 20 Minuten"> 10 bis 20 Minuten</label>
-              <label><input type="radio" name="nachrichtenzeit" value="20 bis 30 Minuten"> 20 bis 30 Minuten</label>
-              <label><input type="radio" name="nachrichtenzeit" value="Mehr als 30 Minuten"> Mehr als 30 Minuten</label>
-              <label><input type="radio" name="nachrichtenzeit" value="Nur für Tagesaktualitäten"> Ich bin nur online, um mich über Tagesaktualitäten zu informieren</label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label for="freizeit">7. Mit was beschäftigst du dich in deiner Freizeit?</label>
-            <textarea id="freizeit" maxlength="1000" required></textarea>
-          </div>
-
-          <div class="frage">
-            <label>8. Welche Medien nutzt du am häufigsten? (Mehrfachauswahl möglich)</label>
-            <div class="optionen">
-              <label><input type="checkbox" name="medien" value="TV"> TV</label>
-              <label><input type="checkbox" name="medien" value="Radio"> Radio</label>
-              <label><input type="checkbox" name="medien" value="Zeitung"> Zeitung</label>
-              <label><input type="checkbox" name="medien" value="Social Media"> Social Media</label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label>9. Für welche Themen interessierst du dich? (Mehrfachauswahl möglich)</label>
-            <div class="optionen">
-              <label><input type="checkbox" name="interessen" value="Politik"> Politik</label>
-              <label><input type="checkbox" name="interessen" value="Wissenschaft"> Wissenschaft</label>
-              <label><input type="checkbox" name="interessen" value="Gesellschaft"> Gesellschaft</label>
-              <label><input type="checkbox" name="interessen" value="Sport"> Sport</label>
-              <label><input type="checkbox" name="interessen" value="Promis"> Promis</label>
-            </div>
-          </div>
-
-          <div class="frage">
-            <label>10. Klickst du auf eine Schlagzeile, auch wenn du weisst, dass sie Clickbait enthält?</label>
-            <div class="optionen">
-              <label><input type="radio" name="clickbait_klick" value="Ja" required> Ja</label>
-              <label><input type="radio" name="clickbait_klick" value="Nein"> Nein</label>
-            </div>
-            <label for="clickbaitWarum">Warum oder warum nicht?</label>
-            <textarea id="clickbaitWarum" maxlength="1000" required></textarea>
-          </div>
-
-          <div class="frage">
-            <label>11. Wie kritisch würdest du deinen Umgang mit Medien in deinem Alltag einschätzen?</label>
-            <div class="optionen">
-              <label><input type="radio" name="selbsteinschaetzung" value="1" required> 1</label>
-              <label><input type="radio" name="selbsteinschaetzung" value="2"> 2</label>
-              <label><input type="radio" name="selbsteinschaetzung" value="3"> 3</label>
-              <label><input type="radio" name="selbsteinschaetzung" value="4"> 4</label>
-              <label><input type="radio" name="selbsteinschaetzung" value="5"> 5</label>
-            </div>
-            <p class="hinweis">1 = Gar nicht kritisch, 5 = Sehr kritisch</p>
-          </div>
-
-          <div class="frage">
-            <label>12. Welche Nachrichtenportale nutzt du am häufigsten? (Mehrfachauswahl möglich)</label>
-            <div class="optionen">
-              <label><input type="checkbox" name="portale" value="Blick"> Blick</label>
-              <label><input type="checkbox" name="portale" value="20 Minuten"> 20 Minuten</label>
-              <label><input type="checkbox" name="portale" value="SRF"> SRF</label>
-              <label><input type="checkbox" name="portale" value="Watson"> Watson</label>
-              <label><input type="checkbox" name="portale" value="News"> News</label>
-              <label><input type="checkbox" name="portale" value="Andere" id="portalAndere"> Andere</label>
-            </div>
-            <input type="text" id="portalAndereText" placeholder="Welche anderen Nachrichtenportale?">
-          </div>
-
-          <button type="submit" class="primary">Weiter zum Nachrichtentest</button>
-        </form>
-      `;
-    }    async function speichereFragebogen() {
-      const geschlecht = document.querySelector('input[name="geschlecht"]:checked')?.value;
-      const onlinezeit = document.querySelector('input[name="onlinezeit"]:checked')?.value;
-      const nachrichtenzeit = document.querySelector('input[name="nachrichtenzeit"]:checked')?.value;
-      const clickbaitKlick = document.querySelector('input[name="clickbait_klick"]:checked')?.value;
-      const selbsteinschaetzung = document.querySelector('input[name="selbsteinschaetzung"]:checked')?.value;
-
-      const notensummeUnbekannt = document.getElementById("notensummeUnbekannt").checked;
-      const notensumme = document.getElementById("notensumme").value;
-
-      const daten = {
-        teilnehmer_id: teilnehmerId,
-        geschlecht,
-        alter: Number(document.getElementById("alter").value),
-        klasse: document.getElementById("klasse").value.trim(),
-        notensumme: notensummeUnbekannt || !notensumme ? null : Number(notensumme),
-        notensumme_unbekannt: notensummeUnbekannt,
-        onlinezeit,
-        nachrichtenzeit,
-        freizeit: document.getElementById("freizeit").value.trim(),
-        medien: [...document.querySelectorAll('input[name="medien"]:checked')].map(x => x.value),
-        interessen: [...document.querySelectorAll('input[name="interessen"]:checked')].map(x => x.value),
-        clickbait_klick: clickbaitKlick,
-        clickbait_warum: document.getElementById("clickbaitWarum").value.trim(),
-        selbsteinschaetzung: Number(selbsteinschaetzung),
-        portale: [...document.querySelectorAll('input[name="portale"]:checked')].map(x => x.value),
-        portal_andere_text: document.getElementById("portalAndereText").value.trim() || null
-      };
-
-      const { error } = await supabase
-        .from("Hintergrundfragen")
-        .insert(daten);
-
-      if (error) {
-        console.error("Fehler beim Speichern des Fragebogens:", error);
-        alert("Deine Antworten konnten nicht gespeichert werden. Bitte versuche es nochmals.");
-        return false;
-      }
-
-      return true;
-    }
-
-    function renderAuswahl() {
-      phase = "auswahl";
-
-      app.innerHTML = `
-        <p class="section-kicker">Interaktive Untersuchung</p>
-        <h1>Welche Schlagzeile weckt dein Interesse?</h1>
-        <p class="intro">
-          In diesem Teil siehst du verschiedene Schlagzeilen zu unterschiedlichen
-          Themen. Wähle pro Thema die Schlagzeile aus, deren Artikel du öffnen möchtest.
-          Es gibt keine richtigen oder falschen Antworten.
-        </p>
-
-        <div class="part-title">Teil 2 von 3: Schlagzeilen auswählen</div>
-
-        <div class="hinweis">
-          Wähle bei jedem Thema genau eine Schlagzeile aus und öffne den dazugehörigen Artikel.
-        </div>
-
-        <div id="auswahlBereich"></div>
-
-        <button id="weiterBewertung" class="primary" disabled>
-          Weiter zur Bewertung
-        </button>
-
-        <p id="auswahlStatus"></p>
-      `;
-
-      const bereich = document.getElementById("auswahlBereich");
-
-      themen.forEach(thema => {
-        const zufall = mischeSchlagzeilenMitTeilnehmerId(
-          thema.headlines,
-          teilnehmerId,
-          thema.id
-        );
-
-        const block = document.createElement("section");
-        block.className = "thema";
-
-        block.innerHTML = `
-          <h2>${thema.name}</h2>
-          <div class="headlineListe"></div>
-          <p class="status" id="status-${thema.id}"></p>
-        `;
-
-        const liste = block.querySelector(".headlineListe");
-
-        zufall.forEach(headline => {
-          const button = document.createElement("button");
-          button.className = "headline";
-          button.type = "button";
-
-          button.innerHTML = `
-            ${headline.text}
-            <span class="stufe">Schlagzeile auswählen</span>
-          `;
-
-          button.addEventListener("click", () => {
-            waehleHeadline(thema, headline, button);
-          });
-
-          liste.appendChild(button);
-        });
-
-        bereich.appendChild(block);
-      });
-
-      document.getElementById("weiterBewertung").addEventListener("click", () => {
-        renderBewertung();
-      });
-    }
-
-    async function waehleHeadline(thema, headline, button) {
-      if (ausgewaehlt[thema.id]) return;
-
-      ausgewaehlt[thema.id] = headline;
-
-      const status = document.getElementById(`status-${thema.id}`);
-      status.textContent = "Ausgewählt. Der Artikel wird geöffnet.";
-
-      const alleButtons = button.parentElement.querySelectorAll("button");
-      alleButtons.forEach(b => {
-        b.disabled = true;
-      });
-
-      button.classList.add("ausgewaehlt");
-
-      const artikelUrl = new URL("artikel.html", window.location.href);
-      artikelUrl.searchParams.set("thema", thema.name);
-      artikelUrl.searchParams.set("themaId", thema.id);
-      artikelUrl.searchParams.set("headline", headline.text);
-      artikelUrl.searchParams.set("headlineId", headline.id);
-      artikelUrl.searchParams.set("stufe", headline.stufe);
-      artikelUrl.searchParams.set("teilnehmerId", teilnehmerId);
-
-      const { error } = await supabase
-        .from("Klicks")
-        .insert({
-          link: artikelUrl.href,
-          teilnehmer_id: teilnehmerId,
-          thema: thema.name,
-          headline_id: headline.id,
-          headline: headline.text,
-          clickbait_stufe: headline.stufe
-        });
-
-      if (error) {
-        console.error("Fehler beim Speichern des Klicks:", error);
-      }
-
-      window.open(artikelUrl.href, "_blank");
-
-      const anzahl = Object.keys(ausgewaehlt).length;
-      document.getElementById("auswahlStatus").textContent =
-        `${anzahl} von ${themen.length} Themen ausgewählt.`;
-
-      if (anzahl === themen.length) {
-        document.getElementById("weiterBewertung").disabled = false;
-      }
-    }
-
-    function renderBewertung() {
-      phase = "bewertung";
-
-      app.innerHTML = `
-        <p class="section-kicker">Interaktive Untersuchung</p>
-        <h1>Bewerte die Schlagzeilen</h1>
-        <p class="intro">
-          Bewerte nun die Schlagzeilen, die du zuvor ausgewählt hast.
-          Es geht um deine persönliche Einschätzung.
-        </p>
-
-        <div class="part-title">Teil 3 von 3: Schlagzeilen bewerten</div>
-
-        <form id="bewertungForm">
-          <div id="bewertungen"></div>
-          <button type="submit" class="primary">Antworten abschicken</button>
-        </form>
-        <p id="meldung"></p>
-      `;
-
-      const bereich = document.getElementById("bewertungen");
-
-      themen.forEach(thema => {
-        const headline = ausgewaehlt[thema.id];
-        if (!headline) return;
-
-        const block = document.createElement("section");
-        block.className = "bewertung";
-
-        block.innerHTML = `
-          <p class="section-kicker">${thema.name}</p>
-          <strong>${headline.text}</strong>
-          <p>Wie aussagekräftig findest du diese Schlagzeile?</p>
-          <div class="skala">
-            ${[1, 2, 3, 4, 5].map(wert => `
-              <label>
-                <input type="radio" name="rating-${thema.id}" value="${wert}" required>
-                ${wert}
-              </label>
-            `).join("")}
-          </div>
-          <p class="hinweis">1 = Gar nicht aussagekräftig, 5 = Sehr aussagekräftig</p>
-          <label for="grund-${thema.id}">Warum hast du diese Bewertung gewählt?</label>
-          <textarea id="grund-${thema.id}" maxlength="1000"></textarea>
-        `;
-
-        bereich.appendChild(block);
-      });
-
-      document.getElementById("bewertungForm").addEventListener("submit", speichereBewertungen);
-    }    async function speichereBewertungen(event) {
-      event.preventDefault();
-
-      const meldung = document.getElementById("meldung");
-      const daten = [];
-
-      for (const thema of themen) {
-        const headline = ausgewaehlt[thema.id];
-        if (!headline) continue;
-
-        const rating = document.querySelector(
-          `input[name="rating-${thema.id}"]:checked`
-        );
-
-        const begruendung = document.getElementById(
-          `grund-${thema.id}`
-        ).value.trim();
-
-        if (!rating) {
-          meldung.textContent = "Bitte bewerte alle Schlagzeilen.";
-          meldung.className = "fehler";
-          return;
-        }
-
-        daten.push({
-          teilnehmer_id: teilnehmerId,
-          thema: thema.name,
-          headline_id: headline.id,
-          headline: headline.text,
-          clickbait_stufe: headline.stufe,
-          ausgewaehlt: true,
-          glaubwuerdigkeit: Number(rating.value),
-          begruendung
-        });
-      }
-
-      const { error } = await supabase
-        .from("Testantworten")
-        .insert(daten);
-
-      if (error) {
-        console.error("Fehler beim Speichern der Bewertungen:", error);
-        meldung.textContent = "Deine Antworten konnten nicht gespeichert werden. Bitte versuche es nochmals.";
-        meldung.className = "fehler";
-        return;
-      }
-
-      app.innerHTML = `
-        <p class="section-kicker">Untersuchung abgeschlossen</p>
-        <h1>Vielen Dank für deine Teilnahme!</h1>
-        <p class="intro">
-          Deine Antworten wurden erfolgreich gespeichert.
-          Du kannst dieses Fenster jetzt schliessen.
-        </p>
-      `;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("fragebogenForm");
-
-      if (form) {
-        form.addEventListener("submit", async (event) => {
-          event.preventDefault();
-
-          const notensummeUnbekannt =
-            document.getElementById("notensummeUnbekannt").checked;
-
-          const notensumme =
-            document.getElementById("notensumme").value;
-
-          if (!notensummeUnbekannt && !notensumme) {
-            alert("Bitte gib deine Notensumme an oder wähle «Weiss ich nicht mehr».");
-            return;
-          }
-
-          if (notensummeUnbekannt && notensumme) {
-            alert("Bitte gib entweder die Notensumme an oder wähle «Weiss ich nicht mehr».");
-            return;
-          }
-
-          if (
-            document.querySelectorAll('input[name="medien"]:checked').length === 0 ||
-            document.querySelectorAll('input[name="interessen"]:checked').length === 0 ||
-            document.querySelectorAll('input[name="portale"]:checked').length === 0
-          ) {
-            alert("Bitte beantworte auch die Fragen zu Medien, Interessen und Nachrichtenportalen.");
-            return;
-          }
-
-          if (
-            document.getElementById("portalAndere").checked &&
-            !document.getElementById("portalAndereText").value.trim()
-          ) {
-            alert("Bitte gib an, welches andere Nachrichtenportal du nutzt.");
-            return;
-          }
-
-          const gespeichert = await speichereFragebogen();
-
-          if (gespeichert) {
-            renderAuswahl();
-          }
-        });
-      }
-
-      renderFragebogen();
-    });  </script>
+    const hinweis = document.createElement("p");
+    hinweis.className = "hinweis";
+    hinweis.textContent = "1 = Gar nicht aussagekräftig, 5 = Sehr aussagekräftig";
+    const grundLabel = document.createElement("label");
+    grundLabel.htmlFor = `grund-${thema.id}`;
+    grundLabel.textContent = "Warum hast du diese Bewertung gewählt?";
+    const textarea = document.createElement("textarea");
+    textarea.id = `grund-${thema.id}`;
+    textarea.maxLength = 1000;
+    textarea.required = true;
+    block.append(kicker,strong,frage,skala,hinweis,grundLabel,textarea);
+    bereich.appendChild(block);
+  });
+  document.getElementById("bewertungForm").addEventListener("submit",speichereBewertungen);
+}
+
+async function speichereBewertungen(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  if (!form.reportValidity()) return;
+  const daten = [];
+  for (const thema of themen) {
+    const headline = ausgewaehlt[thema.id];
+    if (!headline) continue;
+    const rating = form.querySelector(`input[name="rating-${thema.id}"]:checked`);
+    const begruendung = document.getElementById(`grund-${thema.id}`).value.trim();
+    daten.push({
+      teilnehmer_id:teilnehmerId,
+      thema:thema.name,
+      headline_id:headline.id,
+      headline:headline.text,
+      clickbait_stufe:headline.stufe,
+      ausgewaehlt:true,
+      glaubwuerdigkeit:Number(rating.value),
+      begruendung
+    });
+  }
+  const button = form.querySelector('button[type="submit"]');
+  button.disabled = true;
+  button.textContent = "Wird gespeichert ...";
+  const {error} = await supabaseClient.from("Testantworten").insert(daten);
+  if (error) {
+    console.error("Bewertungen konnten nicht gespeichert werden:",error);
+    zeigeMeldung("Deine Antworten konnten nicht gespeichert werden. Bitte versuche es nochmals.",true);
+    button.disabled = false;
+    button.textContent = "Erneut versuchen";
+    return;
+  }
+  app.innerHTML = `
+    <p class="section-kicker">Untersuchung abgeschlossen</p>
+    <h1>Vielen Dank für deine Teilnahme!</h1>
+    <p class="intro">Deine Antworten wurden erfolgreich gespeichert. Du kannst dieses Fenster jetzt schliessen.</p>`;
+}
+</script>
 </body>
 </html>
