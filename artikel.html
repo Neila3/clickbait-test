@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nachrichten</title>
+  <title>Artikel</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -14,152 +15,75 @@
 
     body {
       margin: 0;
-      background: #f0f1f3;
-      color: #17191d;
+      padding: 24px 16px;
+      background: #f4f5f7;
+      color: #222;
       font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.65;
+      line-height: 1.75;
     }
 
-    .topline {
-      height: 7px;
-      background: #c51f32;
-    }
-
-    header {
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 34px;
       background: white;
-      border-bottom: 1px solid #d5d7db;
+      border-radius: 12px;
+      box-shadow: 0 3px 15px #0000000d;
     }
 
-    .masthead {
-      max-width: 1040px;
-      margin: auto;
-      padding: 22px 24px 16px;
-    }
-
-    .brand {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 40px;
-      font-weight: 800;
-      letter-spacing: -1.5px;
-    }
-
-    .brand span {
-      color: #c51f32;
-    }
-
-    .tagline {
-      margin: 7px 0 0;
-      color: #626873;
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    nav {
-      background: #191b20;
-      color: white;
-      font-size: 12px;
+    .rubrik {
+      color: #666;
+      font-size: 13px;
       font-weight: bold;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
 
-    .nav-inner {
-      max-width: 1040px;
-      margin: auto;
-      padding: 11px 24px;
-    }
-
-    main {
-      max-width: 850px;
-      margin: 28px auto 50px;
-      padding: 34px 45px 45px;
-      background: white;
-      border: 1px solid #e0e2e6;
-      box-shadow: 0 3px 12px #1111110a;
-    }
-
-    .category {
-      color: #c51f32;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.3px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
     h1 {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(30px, 5vw, 43px);
-      line-height: 1.15;
-      letter-spacing: -.7px;
-      margin: 0 0 18px;
+      margin: 12px 0;
+      font-size: clamp(26px, 4vw, 36px);
+      line-height: 1.3;
     }
 
     .meta {
-      color: #737984;
-      font-size: 12px;
-      border-bottom: 1px solid #dedfe3;
-      padding-bottom: 18px;
       margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #ddd;
+      color: #666;
+      font-size: 14px;
     }
 
-    .lead {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 20px;
-      font-weight: bold;
-      line-height: 1.5;
-      margin-bottom: 25px;
-    }
-
-    .article-text {
+    .artikeltext {
       font-size: 17px;
-      line-height: 1.8;
     }
 
-    .article-text p {
+    .artikeltext p {
       margin: 0 0 20px;
     }
 
-    .article-text h2 {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 24px;
-      margin: 30px 0 12px;
+    .zurueck {
+      margin-top: 24px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 7px;
+      background: #222;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
     }
 
-    .footer {
-      border-top: 1px solid #dedfe3;
-      margin-top: 35px;
-      padding-top: 15px;
-      color: #737984;
-      font-size: 12px;
-    }
-
-    .error {
-      color: #a61b1b;
-      font-weight: bold;
+    .lesezeit {
+      margin-top: 16px;
+      color: #777;
+      font-size: 13px;
     }
 
     @media (max-width: 600px) {
-      .masthead {
-        padding: 18px 17px 13px;
-      }
-
-      .brand {
-        font-size: 32px;
-      }
-
-      .nav-inner {
-        padding: 10px 17px;
-      }
-
       main {
-        margin: 16px 10px 35px;
-        padding: 25px 20px 30px;
+        padding: 22px;
       }
 
-      .article-text {
+      .artikeltext {
         font-size: 16px;
       }
     }
@@ -167,260 +91,355 @@
 </head>
 
 <body>
+<main>
+  <div class="rubrik" id="rubrik">Wissen und Gesellschaft</div>
 
-  <div class="topline"></div>
+  <h1 id="headline">Artikel wird geladen ...</h1>
 
-  <header>
-    <div class="masthead">
-      <p class="brand">DIE <span>NACHRICHTEN</span></p>
-      <p class="tagline">Aktuelles · Wissen · Gesellschaft</p>
-    </div>
+  <div class="meta">Hintergrundartikel</div>
 
-    <nav>
-      <div class="nav-inner">
-        Nachrichten-Test / Artikel
-      </div>
-    </nav>
-  </header>
+  <article id="artikeltext" class="artikeltext"></article>
 
-  <main>
-    <div id="artikel">
-      <p>Artikel wird geladen ...</p>
-    </div>
-  </main>
+  <button id="zurueck" class="zurueck">
+    Zurück zum Test
+  </button>
 
-  <script>
-    const SUPABASE_URL = "https://bltkmbsrvzjokehselko.supabase.co";
+  <p id="lesezeit" class="lesezeit">
+    Lesezeit wird erfasst ...
+  </p>
+</main>
 
-    // Hier denselben Publishable Key wie in deiner index.html einsetzen.
-    const SUPABASE_KEY = "DEIN_SUPABASE_PUBLISHABLE_KEY";
+<script>
+  // ---------------------------------------------
+  // 1. SUPABASE
+  // ---------------------------------------------
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+  const SUPABASE_URL =
+    "https://bltkmbsrvzjokehselko.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_HKcc78JW8kVjXaogUWvQUg_lKTopI9T";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+  // ---------------------------------------------
+  // 2. DATEN AUS DER URL
+  // ---------------------------------------------
+
+  const params = new URLSearchParams(window.location.search);
+
+  const themaId = params.get("themaId") || "";
+  const thema = params.get("thema") || "Allgemein";
+  const headline = params.get("headline") || "Artikel";
+  const headlineId = params.get("headlineId") || "";
+  const teilnehmerId = params.get("teilnehmerId") || "";
+
+  document.getElementById("headline").textContent = headline;
+  document.title = headline;
+
+
+  // ---------------------------------------------
+  // 3. ARTIKELTEXTE
+  // ---------------------------------------------
+
+  const artikelTexte = {
+    schlaf: `
+      <p>Schlaf spielt eine wichtige Rolle für Aufmerksamkeit,
+      Gedächtnis und Lernen. Während der Nacht verarbeitet das Gehirn
+      Informationen, die es tagsüber aufgenommen hat. Forschende
+      beschäftigen sich deshalb seit Jahren mit der Frage, wie Schlafdauer
+      und Schlafqualität mit der Konzentrationsfähigkeit zusammenhängen.</p>
+
+      <p>Wer zu wenig schläft, kann sich am nächsten Tag müder fühlen
+      und bei Aufgaben schneller abgelenkt sein. Wie stark sich das
+      bemerkbar macht, ist jedoch von Person zu Person unterschiedlich.
+      Auch Faktoren wie Stress, Tagesrhythmus und die Qualität des Schlafs
+      können eine Rolle spielen.</p>
+
+      <p>Gerade bei Jugendlichen verändert sich der Schlafrhythmus häufig.
+      Gleichzeitig beginnen Schule und andere Verpflichtungen oft früh
+      am Morgen. Fachleute empfehlen deshalb, auf regelmässige Schlafzeiten
+      zu achten und ausreichend Zeit für Erholung einzuplanen.</p>
+
+      <p>Aus einem einzelnen schlechten Schlaftag lässt sich allerdings
+      nicht ableiten, wie leistungsfähig jemand grundsätzlich ist.
+      Für verlässliche Aussagen müssen unterschiedliche Einflüsse
+      berücksichtigt werden.</p>
+    `,
+
+    social_media: `
+      <p>Soziale Medien gehören für viele Jugendliche zum Alltag.
+      Sie ermöglichen es, mit Freunden in Kontakt zu bleiben,
+      Informationen zu erhalten und eigene Interessen zu entdecken.
+      Gleichzeitig beschäftigen sich Forschende zunehmend damit,
+      wie die Nutzung sozialer Plattformen mit dem Wohlbefinden
+      zusammenhängt.</p>
+
+      <p>Ein möglicher Einflussfaktor ist der Vergleich mit anderen.
+      In sozialen Netzwerken sehen Nutzerinnen und Nutzer häufig
+      ausgewählte Momente aus dem Leben anderer Menschen. Solche Beiträge
+      können den Eindruck vermitteln, dass andere erfolgreicher,
+      beliebter oder zufriedener sind als man selbst.</p>
+
+      <p>Die Auswirkungen sind jedoch nicht bei allen Menschen gleich.
+      Manche erleben soziale Medien als Unterstützung und fühlen sich
+      mit anderen verbunden. Andere berichten von Druck, Ablenkung oder
+      dem Gefühl, ständig erreichbar sein zu müssen. Auch die Art der
+      Inhalte und die persönliche Nutzung spielen eine Rolle.</p>
+
+      <p>Deshalb lässt sich die Wirkung sozialer Medien nicht allein
+      anhand der täglichen Nutzungsdauer beurteilen. Entscheidend ist
+      unter anderem, welche Inhalte konsumiert werden und wie sich die
+      Nutzung auf den Alltag auswirkt.</p>
+    `,
+
+    fruehstueck: `
+      <p>Das Frühstück wird häufig mit Konzentration und Leistungsfähigkeit
+      im Schulalltag in Verbindung gebracht. Forschende untersuchen,
+      ob und unter welchen Bedingungen eine Mahlzeit am Morgen mit
+      Aufmerksamkeit und kognitiven Leistungen zusammenhängt.</p>
+
+      <p>Nach einer längeren Zeit ohne Nahrung kann das Frühstück eine
+      Gelegenheit sein, Energie und Nährstoffe aufzunehmen. Ob sich dies
+      unmittelbar auf die Konzentration auswirkt, hängt allerdings von
+      verschiedenen Faktoren ab. Dazu zählen beispielsweise die Ernährung
+      insgesamt, die Schlafqualität und individuelle Bedürfnisse.</p>
+
+      <p>Auch die Zusammensetzung einer Mahlzeit kann eine Rolle spielen.
+      Eine abwechslungsreiche Ernährung liefert unterschiedliche
+      Nährstoffe. Aus einer bestimmten Frühstücksform lässt sich jedoch
+      nicht automatisch auf die schulische Leistung einer Person
+      schliessen.</p>
+
+      <p>Menschen unterscheiden sich darin, wann sie Hunger haben und
+      welche Essgewohnheiten zu ihnen passen. Für allgemeine Aussagen
+      über Konzentration und Frühstück müssen deshalb mehrere
+      Einflussfaktoren berücksichtigt werden.</p>
+    `,
+
+    sport: `
+      <p>Regelmässige Bewegung wird häufig mit körperlicher Gesundheit
+      und psychischem Wohlbefinden in Verbindung gebracht. In der Forschung
+      wird unter anderem untersucht, wie sportliche Aktivität mit Stimmung,
+      Stress und Schlaf zusammenhängt.</p>
+
+      <p>Bewegung kann dabei helfen, Anspannung abzubauen und den Alltag
+      zu strukturieren. Manche Menschen erleben Sport auch als Gelegenheit,
+      soziale Kontakte zu pflegen oder persönliche Ziele zu verfolgen.
+      Welche Erfahrungen jemand macht, hängt unter anderem von der Sportart,
+      der Intensität und den individuellen Umständen ab.</p>
+
+      <p>Sport ist jedoch kein allgemeingültiges Mittel gegen jede
+      Belastung. Zeitdruck, Verletzungen oder Leistungsdruck können
+      die Erfahrung auch negativ beeinflussen. Zudem unterscheiden sich
+      die Bedürfnisse und Möglichkeiten der Menschen.</p>
+
+      <p>Fachleute betrachten Bewegung deshalb als einen möglichen
+      Bestandteil eines gesunden Lebensstils. Für Aussagen über das
+      Wohlbefinden müssen daneben weitere Faktoren wie soziale Beziehungen,
+      Erholung und die persönliche Lebenssituation beachtet werden.</p>
+    `,
+
+    plastik: `
+      <p>Plastik wird in vielen Bereichen des Alltags eingesetzt,
+      etwa bei Verpackungen, Kleidung und technischen Geräten.
+      Das Material ist vielseitig und häufig langlebig. Genau diese
+      Eigenschaften werden zum Problem, wenn Kunststoffabfälle in die
+      Umwelt gelangen und dort lange bestehen bleiben.</p>
+
+      <p>Plastikabfälle können Gewässer und Böden belasten. Tiere können
+      sich in grösseren Kunststoffteilen verfangen oder kleinere Teile
+      aufnehmen. Zusätzlich wird untersucht, wie sich Mikroplastik in
+      verschiedenen Umgebungen verteilt und welche Folgen dies haben kann.</p>
+
+      <p>Die Belastung entsteht entlang des gesamten Lebenszyklus eines
+      Produkts. Dabei spielen Herstellung, Nutzung, Entsorgung und Recycling
+      eine Rolle. Nicht jeder Kunststoff lässt sich gleich gut
+      wiederverwerten, und Recycling allein verhindert nicht, dass Abfälle
+      in die Umwelt gelangen.</p>
+
+      <p>Massnahmen können deshalb an unterschiedlichen Stellen ansetzen:
+      etwa bei der Vermeidung unnötiger Verpackungen, einer besseren
+      Abfallentsorgung und der Entwicklung geeigneter Materialien.
+      Wie wirksam einzelne Massnahmen sind, hängt von ihrer konkreten
+      Umsetzung ab.</p>
+    `
+  };
+
+  document.getElementById("artikeltext").innerHTML =
+    artikelTexte[themaId] ||
+    "<p>Für dieses Thema wurde kein Artikel gefunden.</p>";
+
+
+  // ---------------------------------------------
+  // 4. LESEZEITMESSUNG
+  // ---------------------------------------------
+
+  const lesezeitElement = document.getElementById("lesezeit");
+
+  // Jede Person und jeder Artikel bekommen einen eigenen lokalen Schlüssel.
+  const zeitKey =
+    `artikelzeit_${teilnehmerId}_${headlineId}`;
+
+  let gesamtMillisekunden = Number(
+    localStorage.getItem(zeitKey) || 0
+  );
+
+  let startzeit = document.visibilityState === "visible"
+    ? Date.now()
+    : null;
+
+  let letzteErfolgreichGespeicherteSekunde = 0;
+  let speicherLaeuft = false;
+  let speichernErneutNoetig = false;
+  let beendet = false;
+
+  function zeitJetzt() {
+    if (startzeit === null) {
+      return gesamtMillisekunden;
+    }
+
+    return gesamtMillisekunden + (Date.now() - startzeit);
+  }
+
+  function lokalSichern() {
+    const jetzt = Date.now();
+
+    if (startzeit !== null) {
+      gesamtMillisekunden += jetzt - startzeit;
+      startzeit = jetzt;
+    }
+
+    localStorage.setItem(
+      zeitKey,
+      String(gesamtMillisekunden)
     );
 
-    const params = new URLSearchParams(window.location.search);
+    aktualisiereAnzeige();
+  }
 
-    const thema = params.get("thema");
-    const themaId = params.get("themaId");
-    const headline = params.get("headline");
-    const headlineId = params.get("headlineId");
-    const teilnehmerId = params.get("teilnehmerId");
+  function aktualisiereAnzeige() {
+    const sekunden = Math.floor(zeitJetzt() / 1000);
 
-    const artikelBereich = document.getElementById("artikel");
+    lesezeitElement.textContent =
+      `Erfasste Lesezeit: ${sekunden} Sekunden`;
+  }
 
-    const artikelTexte = {
+  async function inSupabaseSpeichern() {
+    lokalSichern();
 
-      schlaf: {
-        kategorie: "Gesundheit",
-        lead: "Schlaf spielt eine wichtige Rolle für die Konzentration. Besonders bei Jugendlichen kann eine unzureichende Nachtruhe den Alltag beeinflussen.",
-        abschnitte: [
-          {
-            titel: "Warum Schlaf wichtig ist",
-            text: "Während des Schlafs verarbeitet das Gehirn Informationen, die tagsüber aufgenommen wurden. Erlebnisse und neu Gelerntes werden dabei gefestigt. Ausreichender Schlaf ist deshalb wichtig für Gedächtnis und Lernfähigkeit."
-          },
-          {
-            titel: "Auswirkungen auf den Schulalltag",
-            text: "Wer zu wenig schläft, kann sich am nächsten Tag häufig schlechter konzentrieren. Auch die Aufmerksamkeit und die Reaktionsfähigkeit können beeinträchtigt sein. Gerade in der Schule kann sich das bemerkbar machen, wenn längere Zeit aufmerksam gearbeitet werden muss."
-          },
-          {
-            titel: "Was den Schlaf beeinflusst",
-            text: "Neben der Schlafdauer spielen auch regelmässige Schlafzeiten und die Schlafqualität eine Rolle. Ein unregelmässiger Tagesrhythmus oder die Nutzung elektronischer Geräte kurz vor dem Schlafengehen können das Einschlafen erschweren."
-          },
-          {
-            titel: "Ein wichtiger Bestandteil des Alltags",
-            text: "Schlaf ist kein nebensächlicher Teil des Tages, sondern beeinflusst verschiedene körperliche und geistige Prozesse. Fachleute empfehlen deshalb, auf einen möglichst regelmässigen Schlafrhythmus zu achten."
-          }
-        ]
-      },
+    const sekunden = Math.floor(gesamtMillisekunden / 1000);
 
-      social: {
-        kategorie: "Gesellschaft",
-        lead: "Soziale Medien gehören für viele Jugendliche zum Alltag. Gleichzeitig wird zunehmend untersucht, wie sich die Nutzung auf das Wohlbefinden auswirken kann.",
-        abschnitte: [
-          {
-            titel: "Ein ständiger Vergleich",
-            text: "Auf Plattformen wie Instagram oder TikTok werden häufig ausgewählte Ausschnitte aus dem Leben anderer Menschen gezeigt. Bilder von Ferien, Erfolgen oder besonderen Erlebnissen können den Eindruck vermitteln, dass das Leben anderer Menschen besonders perfekt verläuft."
-          },
-          {
-            titel: "Mögliche Auswirkungen auf Jugendliche",
-            text: "Forschende beschäftigen sich seit Jahren mit dem Zusammenhang zwischen der Nutzung sozialer Medien und dem psychischen Wohlbefinden. Dabei wird unter anderem untersucht, ob häufige Vergleiche mit anderen Menschen das Selbstbild beeinflussen können."
-          },
-          {
-            titel: "Nicht alle Erfahrungen sind negativ",
-            text: "Soziale Medien können auch positive Seiten haben. Sie ermöglichen es, mit Freunden in Kontakt zu bleiben, neue Interessen zu entdecken und sich über aktuelle Themen zu informieren. Entscheidend ist unter anderem, wie und wie lange die Plattformen genutzt werden."
-          },
-          {
-            titel: "Bewusste Nutzung gewinnt an Bedeutung",
-            text: "Ein bewusster Umgang mit sozialen Medien kann helfen, die eigene Nutzung besser einzuschätzen. Dazu gehört beispielsweise, Inhalte kritisch zu betrachten und sich nicht ausschliesslich an den Darstellungen anderer zu orientieren."
-          }
-        ]
-      },
+    if (sekunden <= 0) return;
 
-      fruehstueck: {
-        kategorie: "Wissenschaft",
-        lead: "Das Frühstück wird häufig als wichtiger Start in den Tag bezeichnet. Forschende untersuchen, welchen Zusammenhang die erste Mahlzeit des Tages mit der Konzentration haben könnte.",
-        abschnitte: [
-          {
-            titel: "Energie für den Morgen",
-            text: "Nach einer längeren Zeit ohne Nahrung benötigt der Körper wieder Energie. Das Frühstück kann dazu beitragen, den Energiebedarf am Morgen zu decken. Welche Lebensmittel dabei gewählt werden, unterscheidet sich von Person zu Person."
-          },
-          {
-            titel: "Zusammenhang mit der Konzentration",
-            text: "In verschiedenen Untersuchungen wird betrachtet, ob Menschen, die frühstücken, bei Aufgaben am Morgen andere Leistungen zeigen als Personen, die auf das Frühstück verzichten. Dabei spielen auch Faktoren wie Schlaf, Ernährung und allgemeine Lebensgewohnheiten eine Rolle."
-          },
-          {
-            titel: "Nicht jedes Frühstück ist gleich",
-            text: "Eine ausgewogene Mahlzeit kann beispielsweise aus Vollkornprodukten, Früchten, Milchprodukten oder anderen nährstoffreichen Lebensmitteln bestehen. Entscheidend ist nicht nur, ob jemand frühstückt, sondern auch die gesamte Ernährung."
-          },
-          {
-            titel: "Individuelle Gewohnheiten",
-            text: "Menschen haben unterschiedliche Tagesabläufe und Bedürfnisse. Während manche morgens gerne essen, haben andere zunächst keinen Appetit. Wie sich das auf die Konzentration auswirkt, kann deshalb nicht für alle Menschen gleich beantwortet werden."
-          }
-        ]
-      },
-
-      sport: {
-        kategorie: "Gesundheit",
-        lead: "Bewegung wirkt sich nicht nur auf die körperliche Fitness aus. Auch der Zusammenhang zwischen sportlicher Aktivität und psychischem Wohlbefinden wird wissenschaftlich untersucht.",
-        abschnitte: [
-          {
-            titel: "Bewegung und Wohlbefinden",
-            text: "Körperliche Aktivität kann verschiedene Prozesse im Körper beeinflussen. Viele Menschen berichten, dass sie sich nach Bewegung ausgeglichener oder entspannter fühlen. Auch wissenschaftliche Untersuchungen beschäftigen sich mit diesen Zusammenhängen."
-          },
-          {
-            titel: "Sport im Alltag",
-            text: "Dabei muss Bewegung nicht immer aus intensivem Training bestehen. Auch Spaziergänge, Velofahren oder andere alltägliche Aktivitäten können zur körperlichen Aktivität beitragen. Wichtig ist, dass Bewegung regelmässig in den Alltag integriert werden kann."
-          },
-          {
-            titel: "Einfluss auf die psychische Gesundheit",
-            text: "Studien zeigen Zusammenhänge zwischen körperlicher Aktivität und verschiedenen Aspekten des psychischen Wohlbefindens. Bewegung kann beispielsweise beim Umgang mit Stress eine unterstützende Rolle spielen. Die Wirkung ist jedoch individuell unterschiedlich."
-          },
-          {
-            titel: "Mehr als sportliche Leistung",
-            text: "Sport wird oft mit Leistung und Wettbewerb verbunden. Für das Wohlbefinden kann jedoch auch die Freude an der Bewegung wichtig sein. Entscheidend ist nicht unbedingt, wie schnell oder wie intensiv trainiert wird."
-          }
-        ]
-      },
-
-      plastik: {
-        kategorie: "Umwelt",
-        lead: "Plastik ist aus dem Alltag kaum wegzudenken. Gleichzeitig stellt die zunehmende Menge an Kunststoffabfällen eine Herausforderung für die Umwelt dar.",
-        abschnitte: [
-          {
-            titel: "Ein weit verbreitetes Material",
-            text: "Kunststoffe werden in zahlreichen Bereichen eingesetzt. Sie finden sich in Verpackungen, Kleidung, elektronischen Geräten und vielen weiteren Alltagsgegenständen. Ihre vielseitige Verwendung macht sie zu einem wichtigen Bestandteil moderner Gesellschaften."
-          },
-          {
-            titel: "Folgen für die Umwelt",
-            text: "Ein Teil des Plastikmülls gelangt in die Natur und kann dort über lange Zeit bestehen bleiben. Besonders Gewässer und Meere sind von Kunststoffabfällen betroffen. Tiere können Plastik aufnehmen oder sich darin verfangen."
-          },
-          {
-            titel: "Mikroplastik als zusätzliche Herausforderung",
-            text: "Durch Umwelteinflüsse kann Kunststoff in immer kleinere Teile zerfallen. Diese Partikel werden als Mikroplastik bezeichnet. Sie wurden bereits in unterschiedlichen Lebensräumen nachgewiesen. Welche langfristigen Folgen sie haben, wird weiterhin erforscht."
-          },
-          {
-            titel: "Möglichkeiten zur Reduktion",
-            text: "Weniger Einwegverpackungen, wiederverwendbare Produkte und eine bessere Abfallentsorgung können dazu beitragen, die Menge an Plastik in der Umwelt zu reduzieren. Auch Unternehmen und politische Entscheidungen spielen dabei eine wichtige Rolle."
-          }
-        ]
-      }
-    };
-
-    function escapeHTML(text) {
-      return String(text).replace(/[&<>"']/g, zeichen => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[zeichen]);
+    if (speicherLaeuft) {
+      speichernErneutNoetig = true;
+      return;
     }
 
-    function zeigeArtikel() {
-      if (!themaId || !headline || !teilnehmerId) {
-        artikelBereich.innerHTML =
-          '<p class="error">Der Artikel konnte nicht geladen werden. Es fehlen Angaben in der URL.</p>';
-        return;
-      }
-
-      const artikel = artikelTexte[themaId];
-
-      if (!artikel) {
-        artikelBereich.innerHTML =
-          '<p class="error">Für dieses Thema wurde kein Artikel gefunden.</p>';
-        return;
-      }
-
-      const abschnitteHTML = artikel.abschnitte.map(abschnitt => `
-        <h2>${escapeHTML(abschnitt.titel)}</h2>
-        <p>${escapeHTML(abschnitt.text)}</p>
-      `).join("");
-
-      artikelBereich.innerHTML = `
-        <div class="category">${escapeHTML(artikel.kategorie)}</div>
-
-        <h1>${escapeHTML(headline)}</h1>
-
-        <div class="meta">
-          DIE NACHRICHTEN · WISSEN UND GESELLSCHAFT
-        </div>
-
-        <div class="lead">
-          ${escapeHTML(artikel.lead)}
-        </div>
-
-        <div class="article-text">
-          ${abschnitteHTML}
-        </div>
-
-        <div class="footer">
-          Ende des Artikels
-        </div>
-      `;
+    if (sekunden <= letzteErfolgreichGespeicherteSekunde) {
+      return;
     }
 
-    // Artikel anzeigen
-    zeigeArtikel();
+    speicherLaeuft = true;
+    speichernErneutNoetig = false;
 
-    // Lesedauer messen
-    const startzeit = Date.now();
-    let gespeichert = false;
-
-    async function speichereArtikelzeit() {
-      if (gespeichert) return;
-
-      gespeichert = true;
-
-      const sekunden = Math.max(
-        1,
-        Math.round((Date.now() - startzeit) / 1000)
-      );
-
+    try {
       const { error } = await supabaseClient
         .from("Artikelzeiten")
-        .insert({
-          teilnehmer_id: teilnehmerId,
-          thema: thema,
-          headline_id: headlineId,
-          headline: headline,
-          sekunden: sekunden
-        });
+        .upsert(
+          {
+            teilnehmer_id: teilnehmerId,
+            thema: thema,
+            headline_id: headlineId,
+            headline: headline,
+            sekunden: sekunden
+          },
+          {
+            onConflict: "teilnehmer_id,headline_id"
+          }
+        );
 
       if (error) {
-        console.error("Fehler beim Speichern der Artikelzeit:", error);
-      } else {
-        console.log("Artikelzeit gespeichert:", sekunden, "Sekunden");
+        throw error;
+      }
+
+      letzteErfolgreichGespeicherteSekunde = sekunden;
+
+      lesezeitElement.textContent =
+        `Lesezeit gespeichert: ${sekunden} Sekunden`;
+
+    } catch (error) {
+      console.error("Fehler beim Speichern der Lesezeit:", error);
+
+      lesezeitElement.textContent =
+        `Lesezeit lokal gesichert: ${sekunden} Sekunden. ` +
+        "Speicherung in Supabase fehlgeschlagen.";
+    } finally {
+      speicherLaeuft = false;
+
+      if (speichernErneutNoetig) {
+        speichernErneutNoetig = false;
+        inSupabaseSpeichern();
       }
     }
+  }
 
-    // Zeit speichern, wenn die Artikelseite verlassen wird
-    window.addEventListener("pagehide", speichereArtikelzeit);
+  // Alle zwei Sekunden lokal sichern und synchronisieren.
+  const zeitIntervall = setInterval(() => {
+    lokalSichern();
+    inSupabaseSpeichern();
+  }, 2000);
 
-    window.addEventListener("beforeunload", speichereArtikelzeit);
+  // Zeit zählt nur, solange der Tab sichtbar ist.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      lokalSichern();
+      startzeit = null;
+      lokalSichern();
+      inSupabaseSpeichern();
+    } else if (!beendet) {
+      startzeit = Date.now();
+      aktualisiereAnzeige();
+    }
+  });
 
-  </script>
+  // Zusätzlicher Versuch beim Verlassen der Seite.
+  window.addEventListener("pagehide", () => {
+    beendet = true;
 
+    lokalSichern();
+    startzeit = null;
+
+    clearInterval(zeitIntervall);
+
+    inSupabaseSpeichern();
+  });
+
+  aktualisiereAnzeige();
+
+
+  // ---------------------------------------------
+  // 5. ZURÜCK ZUM TEST
+  // ---------------------------------------------
+
+  document.getElementById("zurueck").addEventListener("click", () => {
+    inSupabaseSpeichern();
+
+    // Der Artikel wurde in einem separaten Tab geöffnet.
+    window.close();
+
+    // Falls der Browser das Schliessen blockiert:
+    setTimeout(() => {
+      lesezeitElement.textContent +=
+        " Du kannst zum Test-Tab zurückwechseln.";
+    }, 300);
+  });
+</script>
 </body>
 </html>
+```
