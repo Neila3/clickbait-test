@@ -59,8 +59,8 @@
   <main id="app">
     <p class="section-kicker">Interaktive Untersuchung</p>
     <h1>Fragebogen</h1>
-    <p class="intro">Beantworte zuerst einige Fragen zu deinem Medienverhalten. Die Angaben werden anonym ausgewertet. Es gibt keine richtigen oder falschen Antworten.</p>
-    <p class="part-title">Teil 1 von 3: Fragebogen</p>
+    <p class="intro">Beantworte zum Schluss einige Fragen zu deinem Medienverhalten. Die Angaben werden anonym ausgewertet. Es gibt keine richtigen oder falschen Antworten.</p>
+    <p class="part-title">Teil 3 von 3: Fragebogen</p>
 
     <form id="fragebogenForm">
       <div class="frage"><span class="frage-titel">1. Geschlecht</span><div class="optionen">
@@ -120,7 +120,7 @@
         <label><input type="checkbox" name="portale" value="Watson"> Watson</label>
         <label><input type="checkbox" name="portale" value="Andere" id="portalAndere"> Andere</label>
       </div><label for="portalAndereText">Falls andere: Welche?</label><input id="portalAndereText" type="text" maxlength="200"></div>
-      <button id="fragebogenWeiterButton" type="submit" class="primary">Weiter zur Schlagzeilenauswahl</button>
+      <button id="fragebogenWeiterButton" type="submit" class="primary">Umfrage abschliessen</button>
     </form>
     <p id="meldung" role="status"></p>
   </main>
@@ -133,6 +133,7 @@ const SUPABASE_URL = "https://bltkmbsrvzjokehselko.supabase.co";
 const SUPABASE_KEY = "sb_publishable_HKcc78JW8kVjXaogUWvQUg_lKTopI9T";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const app = document.getElementById("app");
+const fragebogenVorlage = app.innerHTML;
 
 let teilnehmerId = sessionStorage.getItem("clickbait_teilnehmer_id");
 if (!teilnehmerId) {
@@ -185,7 +186,8 @@ function mischeSchlagzeilenMitTeilnehmerId(liste, id, themaId) {
   return sortiert;
 }
 
-document.getElementById("notensumme").addEventListener("input", () => {
+function aktiviereFragebogen() {
+  document.getElementById("notensumme").addEventListener("input", () => {
   if (document.getElementById("notensumme").value) {
     document.getElementById("notensummeUnbekannt").checked = false;
   }
@@ -199,6 +201,7 @@ document.getElementById("notensummeUnbekannt").addEventListener("change", () => 
 document.getElementById("portalAndere").addEventListener("change", event => {
   document.getElementById("portalAndereText").required = event.target.checked;
 });
+
 
 document.getElementById("fragebogenForm").addEventListener("submit", async event => {
   event.preventDefault();
@@ -259,15 +262,23 @@ document.getElementById("fragebogenForm").addEventListener("submit", async event
     button.textContent = "Erneut versuchen";
     return;
   }
-  renderAuswahl();
-});
 
+app.innerHTML = `
+  <p class="section-kicker">Untersuchung abgeschlossen</p>
+  <h1>Vielen Dank für deine Teilnahme!</h1>
+  <p class="intro">Deine Antworten wurden erfolgreich gespeichert. Du kannst dieses Fenster jetzt schliessen.</p>`;
+});
+}
+function renderFragebogen() {
+  app.innerHTML = fragebogenVorlage;
+  aktiviereFragebogen();
+}
 function renderAuswahl() {
   app.innerHTML = `
     <p class="section-kicker">Interaktive Untersuchung</p>
     <h1>Welche Schlagzeile weckt dein Interesse?</h1>
     <p class="intro">In diesem Teil siehst du verschiedene Schlagzeilen zu unterschiedlichen Themen. Wähle pro Thema die Schlagzeile aus, deren Artikel du öffnen möchtest. Es gibt keine richtigen oder falschen Antworten.</p>
-    <p class="part-title">Teil 2 von 3: Schlagzeilen auswählen</p>
+    <p class="part-title">Teil 1 von 3: Schlagzeilen auswählen</p>
     <div class="hinweis">Wähle bei jedem Thema genau eine Schlagzeile aus und öffne den dazugehörigen Artikel. Der Artikel öffnet sich in einem neuen Tab. Kehre danach zu diesem Test zurück.</div>
     <div id="auswahlBereich"></div>
     <p id="auswahlStatus" class="status">0 von 5 Themen ausgewählt.</p>
@@ -341,7 +352,7 @@ function renderBewertung() {
     <p class="section-kicker">Interaktive Untersuchung</p>
     <h1>Bewerte die Schlagzeilen</h1>
     <p class="intro">Bewerte, wie aussagekräftig du jede Schlagzeile findest. Begründe deine Einschätzung kurz. Es gibt keine richtigen oder falschen Antworten.</p>
-    <p class="part-title">Teil 3 von 3: Schlagzeilen bewerten</p>
+    <p class="part-title">Teil 2 von 3: Schlagzeilen bewerten</p>
     <form id="bewertungForm"><div id="bewertungen"></div>
       <button type="submit" class="primary">Antworten abschicken</button>
     </form>
@@ -420,11 +431,9 @@ async function speichereBewertungen(event) {
     button.textContent = "Erneut versuchen";
     return;
   }
-  app.innerHTML = `
-    <p class="section-kicker">Untersuchung abgeschlossen</p>
-    <h1>Vielen Dank für deine Teilnahme!</h1>
-    <p class="intro">Deine Antworten wurden erfolgreich gespeichert. Du kannst dieses Fenster jetzt schliessen.</p>`;
+renderFragebogen();
 }
+renderAuswahl();
 </script>
 </body>
 </html>
